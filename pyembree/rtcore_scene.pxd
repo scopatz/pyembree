@@ -1,0 +1,51 @@
+# rtcore_scene.pxd wrapper
+
+cimport cython
+cimport numpy as np
+
+cdef extern from "rtcore_scene.h":
+
+    cdef enum RTCSceneFlags:
+        RTC_SCENE_STATIC
+        RTC_SCENE_DYNAMIC
+        RTC_SCENE_COMPACT
+        RTC_SCENE_COHERENT
+        RTC_SCENE_INCOHERENT
+        RTC_SCENE_HIGH_QUALITY
+        RTC_SCENE_ROBUST
+
+    cdef enum RTCAlgorithmFlags:
+        RTC_INTERSECT1
+        RTC_INTERSECT4
+        RTC_INTERSECT8
+        RTC_INTERSECT16
+
+    ctypedef struct RTCScene
+
+    RTCScene rtcNewScene(RTCSceneFlags flags, RTCAlgorithmFlags aflags)
+
+    ctypedef bool (RTCProgressMonitorFunc)(void* ptr, const double n)
+
+    void rtcSetProgressMonitorFunction(RTCScene scene, RTCProgressMonitorFunc func, void* ptr)
+
+    void rtcCommit(RTCScene scene)
+
+    void rtcCommitThread(RTCScene scene, unsigned int threadID, unsigned int numThreads)
+
+    void rtcIntersect(RTCScene scene, RTCRay& ray)
+
+    void rtcIntersect4(const void* valid, RTCScene scene, RTCRay4& ray)
+
+    void rtcIntersect8(const void* valid, RTCScene scene, RTCRay8& ray)
+
+    void rtcIntersect16(const void* valid, RTCScene scene, RTCRay16& ray)
+
+    void rtcOccluded(RTCScene scene, RTCRay& ray)
+
+    void rtcOccluded4(const void* valid, RTCScene scene, RTCRay4& ray)
+
+    void rtcOccluded8(const void* valid, RTCScene scene, RTCRay8& ray)
+
+    void rtcOccluded16(const void* valid, RTCScene scene, RTCRay16& ray)
+
+    void rtcDeleteScene(RTCScene scene)
