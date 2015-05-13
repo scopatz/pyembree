@@ -3,7 +3,12 @@
 cimport cython
 cimport numpy as np
 
-cdef extern from "rtcore_scene.h":
+cdef extern from "embree2/rtcore_scene.h":
+
+    ctypedef struct RTCRay
+    ctypedef struct RTCRay4
+    ctypedef struct RTCRay8
+    ctypedef struct RTCRay16
 
     cdef enum RTCSceneFlags:
         RTC_SCENE_STATIC
@@ -24,7 +29,7 @@ cdef extern from "rtcore_scene.h":
 
     RTCScene rtcNewScene(RTCSceneFlags flags, RTCAlgorithmFlags aflags)
 
-    ctypedef bool (RTCProgressMonitorFunc)(void* ptr, const double n)
+    ctypedef bint (*RTCProgressMonitorFunc)(void* ptr, const double n)
 
     void rtcSetProgressMonitorFunction(RTCScene scene, RTCProgressMonitorFunc func, void* ptr)
 

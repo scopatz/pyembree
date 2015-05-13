@@ -1,0 +1,5 @@
+build/
+pyembree/*.c
+pyembree/*.cpp
+pyembree/*.cxx
+

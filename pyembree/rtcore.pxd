@@ -1,10 +1,9 @@
 # rtcore.pxd wrapper
 
-from libc.stdint ssize_t
 cimport cython
 cimport numpy as np
 
-cdef extern from "rtcore.h":
+cdef extern from "embree2/rtcore.h":
     void rtcInit(const char* cfg = ?)
     void rtcExit()
 
@@ -21,5 +20,5 @@ cdef extern from "rtcore.h":
     ctypedef void* RTCErrorFunc(const RTCError code, const char* _str)
     void rtcSetErrorFunction(RTCErrorFunc func)
 
-    ctypedef bool RTCMemoryMonitorFunc(const ssize_t _bytes, const bool post)
+    ctypedef bint RTCMemoryMonitorFunc(const ssize_t _bytes, const bint post)
     void rtcSetMemoryMonitorFunction(RTCMemoryMonitorFunc func)

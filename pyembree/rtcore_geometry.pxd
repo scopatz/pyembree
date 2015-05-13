@@ -1,12 +1,11 @@
 # rtcore_geometry wrapper
 
-from libc.stdint cimport ssize_t, size_t
 from .rtcore_ray cimport RTCRay, RTCRay4, RTCRay8, RTCRay16
 from .rtcore_scene cimport RTCScene
 cimport cython
 cimport numpy as np
 
-cdef extern from "rtcore_geometry.h":
+cdef extern from "embree2/rtcore_geometry.h":
     cdef enum RTCBufferType:
         RTC_INDEX_BUFFER
         RTC_VERTEX_BUFFER
@@ -43,10 +42,10 @@ cdef extern from "rtcore_geometry.h":
     ctypedef void (*RTCFilterFunc8)(void* ptr, RTCRay8& ray)
     ctypedef void (*RTCFilterFunc16)(void* ptr, RTCRay16& ray)
 
-    ctypedef void (RTCDisplacementFunc)(void* ptr, unsigned geomID, unsigned primID,
-                                        const float* u, const float* v,
-                                        const float* nx, const float* ny, const float* nz,
-                                        float* px, float* py, float* pz, size_t N)
+    ctypedef void (*RTCDisplacementFunc)(void* ptr, unsigned geomID, unsigned primID,
+                                         const float* u, const float* v,
+                                         const float* nx, const float* ny, const float* nz,
+                                         float* px, float* py, float* pz, size_t N)
 
     unsigned rtcNewInstance(RTCScene target, RTCScene source)
     void rtcSetTransform(RTCScene scene, unsigned geomID,
