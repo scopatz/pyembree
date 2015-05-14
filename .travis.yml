@@ -32,7 +32,8 @@ install:
   # install cymetric
   - ./.travis-install.sh
 
-#script:
+script:
+   - echo "No tests yet!"
 #  - export PATH="$HOME/miniconda/bin:$PATH"
 #  - export LD_LIBRARY_PATH="$HOME/miniconda/lib:$LD_LIBRARY_PATH"
 #  - nosetests -w tests
