@@ -1,0 +1,19 @@
+package:
+  name: embree
+  version: "2.5.1"
+
+source:
+  fn: embree.tar.gz  # [unix]
+  url: https://github.com/embree/embree/releases/download/v2.5.1/embree-2.5.1.x86_64.linux.tar.gz  # [linux]
+  url: https://github.com/embree/embree/releases/download/v2.5.1/embree-2.5.1.x86_64.macosx.tar.gz  # [osx]
+  fn: embree.zip  # [win]
+  url: https://github.com/embree/embree/releases/download/v2.5.1/embree-2.5.1.x64.windows.zip  # [win]
+
+requirements:
+ build:
+  - python  # [win]
+  
+about:
+  home: https://embree.github.io/
+  license: Apache
+  summary: High Performance Ray Tracing Kernels
