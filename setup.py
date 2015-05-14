@@ -7,7 +7,6 @@ from distutils.extension import Extension
 import numpy as np
 from Cython.Build import cythonize
 
-
 include_path = [np.get_include()]
 
 setup(
