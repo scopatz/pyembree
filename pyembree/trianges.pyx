@@ -4,16 +4,8 @@ cimport rtcore_ray as rtcr
 cimport rtcore_scene as rtcs
 cimport rtcore_geometry as rtcg
 cimport rtcore_geometry_user as rtcgu
+from rtcore cimport Vertex, Triangle, Vec3f
 from libc.stdlib cimport malloc, free
-
-cdef struct Vertex:
-    float x, y, z, r
-
-cdef struct Triangle:
-    int v0, v1, v2
-
-cdef struct Vec3f:
-    float x, y, z
 
 ctypedef Vec3f (*renderPixelFunc)(float x, float y,
                 const Vec3f &vx, const Vec3f &vy, const Vec3f &vz,
@@ -25,7 +17,7 @@ def run_triangles():
 cdef unsigned int addCube(rtcs.RTCScene scene_i):
     cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene_i,
                 rtcg.RTCGEOMETRY_STATIC, 12, 8)
-    cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene_i, mesh, rtcg.RTC_VERTEX_BUFFER); 
+    cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
     vertices[0].x = -1
     vertices[0].y = -1
     vertices[0].z = -1

@@ -2,6 +2,8 @@
 
 cimport cython
 cimport numpy as np
+cimport rtcore as rtc
+cimport rtcore_ray as rtcr
 
 cdef extern from "embree2/rtcore_scene.h":
 
@@ -54,3 +56,6 @@ cdef extern from "embree2/rtcore_scene.h":
     void rtcOccluded16(const void* valid, RTCScene scene, RTCRay16& ray)
 
     void rtcDeleteScene(RTCScene scene)
+
+cdef class EmbreeScene:
+    cdef RTCScene scene_i

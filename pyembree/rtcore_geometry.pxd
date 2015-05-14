@@ -6,6 +6,8 @@ cimport cython
 cimport numpy as np
 
 cdef extern from "embree2/rtcore_geometry.h":
+    cdef unsigned int RTC_INVALID_GEOMETRY_ID
+
     cdef enum RTCBufferType:
         RTC_INDEX_BUFFER
         RTC_VERTEX_BUFFER
