@@ -11,6 +11,7 @@ include_path = [np.get_include()]
 
 setup(
     name="pyembree",
-    ext_modules=cythonize('pyembree/*.pyx', language='c++',),
+    ext_modules=cythonize('pyembree/*.pyx', language='c++', 
+                          include_dirs=include_path),
     packages=find_packages(),
 )
