@@ -27,7 +27,8 @@ cdef extern from "embree2/rtcore_scene.h":
         RTC_INTERSECT8
         RTC_INTERSECT16
 
-    ctypedef void* RTCScene 
+
+    ctypedef void* RTCScene
 
     RTCScene rtcNewScene(RTCSceneFlags flags, RTCAlgorithmFlags aflags)
 

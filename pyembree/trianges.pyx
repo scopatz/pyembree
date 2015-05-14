@@ -16,7 +16,7 @@ def run_triangles():
     
 cdef unsigned int addCube(rtcs.RTCScene scene_i):
     cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene_i,
-                rtcg.RTCGEOMETRY_STATIC, 12, 8)
+                rtcg.RTCGEOMETRY_STATIC, 12, 8, 1)
     cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
     vertices[0].x = -1
     vertices[0].y = -1
@@ -159,7 +159,8 @@ cdef unsigned int addCube(rtcs.RTCScene scene_i):
     return mesh
   
 cdef unsigned int addGroundPlane (rtcs.RTCScene scene_i):
-    cdef unsigned int mesh = rtcg.rtcNewTriangleMesh (scene_i, rtcg.RTC_GEOMETRY_STATIC, 2, 4)
+    cdef unsigned int mesh = rtcg.rtcNewTriangleMesh (scene_i,
+            rtcg.RTC_GEOMETRY_STATIC, 2, 4, 1)
 
     cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
     vertices[0].x = -10

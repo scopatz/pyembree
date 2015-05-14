@@ -25,9 +25,11 @@ cdef class TriangleMesh:
         # but also means we have exactly three times as many vertices as
         # triangles.
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
-                    rtcg.RTCGEOMETRY_STATIC, nt, nt*3) 
+                    rtcg.RTC_GEOMETRY_STATIC, nt, nt*3, 1) 
+        
         cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene.scene_i, mesh,
                         rtcg.RTC_VERTEX_BUFFER)
+
         for i in range(nt):
             for j in range(3):
                 vertices[i*3 + j].x = tri_vertices[i,j,0]

@@ -1,16 +1,25 @@
 cimport cython
 cimport numpy as np
+import numpy as np
 cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
 
+cdef void error_printer(const rtc.RTCError code, const char *_str):
+    print "ERROR CAUGHT IN EMBREE"
+    rtc.print_error(code)
+    print "ERROR MESSAGE:", _str
+
 cdef class EmbreeScene:
 
     def __init__(self):
+        rtc.rtcInit(NULL)
+        rtc.rtcSetErrorFunction(error_printer)
         self.scene_i = rtcNewScene(RTC_SCENE_STATIC, RTC_INTERSECT1)
 
     def run(self, np.ndarray[np.float64_t, ndim=2] vec_origins,
                   np.ndarray[np.float64_t, ndim=2] vec_directions):
+        rtcCommit(self.scene_i)
         cdef int nv = vec_origins.shape[0]
         cdef int vo_i, vd_i, vd_step
         cdef np.ndarray[np.int32_t, ndim=1] intersect_ids

@@ -54,16 +54,16 @@ cdef extern from "embree2/rtcore_geometry.h":
                          RTCMatrixType layout, const float *xfm)
     unsigned rtcNewTriangleMesh(RTCScene scene, RTCGeometryFlags flags, 
                                 size_t numTriangles, size_t numVertices,
-                                size_t numTimeSteps = ?)
+                                size_t numTimeSteps)
 
     unsigned rtcNewSubdivisionMesh (RTCScene scene, RTCGeometryFlags flags,
                                     size_t numFaces, size_t numEdges,
                                     size_t numVertices, size_t numEdgeCreases,
                                     size_t numVertexCreases, size_t numHoles,
-                                    size_t numTimeSteps = ?)
+                                    size_t numTimeSteps)
     unsigned rtcNewHairGeometry (RTCScene scene, RTCGeometryFlags flags,
                                  size_t numCurves, size_t numVertices,
-                                 size_t numTimeSteps = ?)
+                                 size_t numTimeSteps)
     void rtcSetMask(RTCScene scene, unsigned geomID, int mask)
     void *rtcMapBuffer(RTCScene scene, unsigned geomID, RTCBufferType type)
     void rtcUnmapBuffer(RTCScene scene, unsigned geomID, RTCBufferType type)

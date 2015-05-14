@@ -4,7 +4,7 @@ cimport cython
 cimport numpy as np
 
 cdef extern from "embree2/rtcore.h":
-    void rtcInit(const char* cfg = ?)
+    void rtcInit(const char* cfg)
     void rtcExit()
 
     cdef enum RTCError:
@@ -17,7 +17,7 @@ cdef extern from "embree2/rtcore.h":
         RTC_CANCELLED 
 
     RTCError rtcGetError()
-    ctypedef void* RTCErrorFunc(const RTCError code, const char* _str)
+    ctypedef void (*RTCErrorFunc)(const RTCError code, const char* _str)
     void rtcSetErrorFunction(RTCErrorFunc func)
 
     ctypedef bint RTCMemoryMonitorFunc(const ssize_t _bytes, const bint post)
@@ -34,3 +34,5 @@ cdef struct Triangle:
 
 cdef struct Vec3f:
     float x, y, z
+
+cdef void print_error(RTCError code)

@@ -13,6 +13,7 @@ ext_modules = cythonize('pyembree/*.pyx', language='c++',
                         include_dirs=include_path)
 for ext in ext_modules:
     ext.include_dirs = include_path
+    ext.libraries = ["embree"]
 
 setup(
     name="pyembree",

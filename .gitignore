@@ -2,4 +2,7 @@ build/
 pyembree/*.c
 pyembree/*.cpp
 pyembree/*.cxx
-
+pyembree/*.so
+pyembree/.*.swp
+pyembree/*.pyc
+.*.swp
