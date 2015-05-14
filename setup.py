@@ -11,8 +11,8 @@ include_path = [np.get_include()]
 
 ext_modules = cythonize('pyembree/*.pyx', language='c++', 
                         include_dirs=include_path)
-print(include_path)
-print(ext_modules)
+for ext in ext_modules:
+    ext.include_dirs = include_path
 
 setup(
     name="pyembree",
