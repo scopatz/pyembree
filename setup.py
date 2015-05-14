@@ -15,4 +15,3 @@ setup(
     ext_modules=cythonize('pyembree/*.pyx', language='c++',),
     packages=find_packages(),
 )
-
