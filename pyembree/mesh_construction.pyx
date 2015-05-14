@@ -33,8 +33,8 @@ cdef class TriangleMesh:
         for i in range(nt):
             for j in range(3):
                 vertices[i*3 + j].x = tri_vertices[i,j,0]
-                vertices[i*3 + j].y = tri_vertices[i,j,0]
-                vertices[i*3 + j].z = tri_vertices[i,j,0]
+                vertices[i*3 + j].y = tri_vertices[i,j,1]
+                vertices[i*3 + j].z = tri_vertices[i,j,2]
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
         cdef Triangle* triangles = <Triangle*> rtcg.rtcMapBuffer(scene.scene_i,

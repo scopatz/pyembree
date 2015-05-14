@@ -34,15 +34,15 @@ cdef class EmbreeScene:
                 ray.org[j] = vec_origins[i, j]
                 ray.dir[j] = vec_directions[vd_i, j]
             ray.tnear = 0.0
-            ray.tfar = 1e38
+            ray.tfar = 1e37
             ray.geomID = rtcg.RTC_INVALID_GEOMETRY_ID
             ray.primID = rtcg.RTC_INVALID_GEOMETRY_ID
+            ray.instID = rtcg.RTC_INVALID_GEOMETRY_ID
             ray.mask = -1
             ray.time = 0
             vd_i += vd_step
-
             rtcIntersect(self.scene_i, ray)
-            intersect_ids[i] = ray.geomID
+            intersect_ids[i] = ray.primID
 
         return intersect_ids
 
