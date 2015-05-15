@@ -6,3 +6,6 @@ pyembree/*.so
 pyembree/.*.swp
 pyembree/*.pyc
 .*.swp
+pyembree.egg-info/
+dist/
+*.png
