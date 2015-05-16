@@ -7,6 +7,9 @@ cimport rtcore_geometry_user as rtcgu
 from rtcore cimport Vertex, Triangle, Vec3f
 from libc.stdlib cimport malloc, free
 
+cdef extern from "mesh_construction.h":
+    int triangulate_hex[12][3]
+
 cdef class TriangleMesh:
     r'''
 
@@ -182,7 +185,8 @@ cdef class ElementMesh(TriangleMesh):
 
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
                     rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1) 
-        
+
+        # first just copy over the vertices
         cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene.scene_i, mesh,
                         rtcg.RTC_VERTEX_BUFFER)
 
@@ -192,59 +196,15 @@ cdef class ElementMesh(TriangleMesh):
             vertices[i].z = quad_vertices[i, 2]
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
+        # now build up the triangles
         cdef Triangle* triangles = <Triangle*> rtcg.rtcMapBuffer(scene.scene_i,
                         mesh, rtcg.RTC_INDEX_BUFFER)
+
         for i in range(ne):
-            j = 12*i
-            # go over all the faces here
-            # face is 0 1 2 3
-            # triangles are 0 1 2 and 0 2 3
-            triangles[j].v0 = quad_indices[i][0]
-            triangles[j].v1 = quad_indices[i][1]
-            triangles[j].v2 = quad_indices[i][2]
-            triangles[j+1].v0 = quad_indices[i][0]
-            triangles[j+1].v1 = quad_indices[i][2]
-            triangles[j+1].v2 = quad_indices[i][3]
-            # face is 4 5 6 7
-            # triangles are 4 5 6 and 4 6 7
-            triangles[j+2].v0 = quad_indices[i][4]
-            triangles[j+2].v1 = quad_indices[i][5]
-            triangles[j+2].v2 = quad_indices[i][6]
-            triangles[j+3].v0 = quad_indices[i][4]
-            triangles[j+3].v1 = quad_indices[i][6]
-            triangles[j+3].v2 = quad_indices[i][7]
-            # face is 0 1 5 4
-            # triangles are 0 1 5 and 0 5 4
-            triangles[j+4].v0 = quad_indices[i][0]
-            triangles[j+4].v1 = quad_indices[i][1]
-            triangles[j+4].v2 = quad_indices[i][5]
-            triangles[j+5].v0 = quad_indices[i][0]
-            triangles[j+5].v1 = quad_indices[i][5]
-            triangles[j+5].v2 = quad_indices[i][4]
-            # face is 1 2 6 5
-            # triangles are 1 2 6 and 1 6 5
-            triangles[j+6].v0 = quad_indices[i][1]
-            triangles[j+6].v1 = quad_indices[i][2]
-            triangles[j+6].v2 = quad_indices[i][6]
-            triangles[j+7].v0 = quad_indices[i][1]
-            triangles[j+7].v1 = quad_indices[i][6]
-            triangles[j+7].v2 = quad_indices[i][5]
-            # face is 0 3 7 4
-            # triangles are 0 3 7 and 0 7 4
-            triangles[j+8].v0 = quad_indices[i][0]
-            triangles[j+8].v1 = quad_indices[i][3]
-            triangles[j+8].v2 = quad_indices[i][7]
-            triangles[j+9].v0 = quad_indices[i][0]
-            triangles[j+9].v1 = quad_indices[i][7]
-            triangles[j+9].v2 = quad_indices[i][4]
-            # face is 3 2 6 7
-            # triangles are 3 2 6 and 3 6 7
-            triangles[j+10].v0 = quad_indices[i][3]
-            triangles[j+10].v1 = quad_indices[i][2]
-            triangles[j+10].v2 = quad_indices[i][6]
-            triangles[j+11].v0 = quad_indices[i][3]
-            triangles[j+11].v1 = quad_indices[i][6]
-            triangles[j+11].v2 = quad_indices[i][7]
+            for j in range(12):
+                triangles[12*i+j].v0 = quad_indices[i][triangulate_hex[j][0]]
+                triangles[12*i+j].v1 = quad_indices[i][triangulate_hex[j][1]]
+                triangles[12*i+j].v2 = quad_indices[i][triangulate_hex[j][2]]
 
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_INDEX_BUFFER)
         self.vertices = vertices
