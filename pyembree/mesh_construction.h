@@ -11,3 +11,11 @@ int triangulate_hex[12][3] = {
   {0, 3, 7}, {0, 7, 4}, // Face is 0 3 7 4
   {3, 2, 6}, {3, 6, 7}  // Face is 3 2 6 7
 };
+
+// Similarly, this is used to triangulate the tetrahedral cells
+int triangulate_tetra[4][3] = {
+  {0, 1, 2}, 
+  {0, 1, 3},
+  {0, 2, 3},
+  {1, 2, 3}
+};

@@ -9,6 +9,7 @@ from libc.stdlib cimport malloc, free
 
 cdef extern from "mesh_construction.h":
     int triangulate_hex[12][3]
+    int triangulate_tetra[4][3]
 
 cdef class TriangleMesh:
     r'''
@@ -224,7 +225,8 @@ cdef class ElementMesh(TriangleMesh):
 
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
                     rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1) 
-        
+
+        # Just copy over the vertices
         cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene.scene_i, mesh,
                         rtcg.RTC_VERTEX_BUFFER)
 
@@ -234,27 +236,14 @@ cdef class ElementMesh(TriangleMesh):
                 vertices[i].z = tetra_vertices[i, 2]
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
+        # Now build up the triangles
         cdef Triangle* triangles = <Triangle*> rtcg.rtcMapBuffer(scene.scene_i,
                         mesh, rtcg.RTC_INDEX_BUFFER)
         for i in range(ne):
-            j = 4*i
-            # the triangles are: 
-            # 0 1 2 
-            # 0 1 3
-            # 0 2 3
-            # 1 2 3
-            triangles[j].v0 = tetra_indices[i][0]
-            triangles[j].v1 = tetra_indices[i][1]
-            triangles[j].v2 = tetra_indices[i][2]
-            triangles[j+1].v0 = tetra_indices[i][0]
-            triangles[j+1].v1 = tetra_indices[i][1]
-            triangles[j+1].v2 = tetra_indices[i][3]
-            triangles[j+2].v0 = tetra_indices[i][0]
-            triangles[j+2].v1 = tetra_indices[i][2]
-            triangles[j+2].v2 = tetra_indices[i][3]
-            triangles[j+3].v0 = tetra_indices[i][1]
-            triangles[j+3].v1 = tetra_indices[i][2]
-            triangles[j+3].v2 = tetra_indices[i][3]
+            for j in range(4):
+                triangles[4*i+j].v0 = tetra_indices[i][triangulate_tetra[j][0]]
+                triangles[4*i+j].v1 = tetra_indices[i][triangulate_tetra[j][1]]
+                triangles[4*i+j].v2 = tetra_indices[i][triangulate_tetra[j][2]]
 
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_INDEX_BUFFER)
         self.vertices = vertices
