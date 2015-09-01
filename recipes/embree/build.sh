@@ -1,5 +1,5 @@
 #!/bin/bash
 cd lib
-ln -s libembree.so.* libembree.so
+ln -s libembree.* libembree.so
 cd ..
 cp -rv * "${PREFIX}"
