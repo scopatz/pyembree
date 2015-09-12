@@ -8,20 +8,20 @@ cimport cython
 cimport numpy as np
 
 cdef extern from "embree2/rtcore_geometry_user.h":
-    ctypedef void RTCBoundsFunc(void* ptr, size_t item, RTCBounds& bounds_o)
-    ctypedef void RTCIntersectFunc(void* ptr, RTCRay& ray, size_t item)
-    ctypedef void RTCIntersectFunc4(const void* valid, void* ptr,
-                                    RTCRay4& ray, size_t item)
-    ctypedef void RTCIntersectFunc8(const void* valid, void* ptr,
-                                    RTCRay8& ray, size_t item)
-    ctypedef void RTCIntersectFunc16(const void* valid, void* ptr,
-                                     RTCRay16& ray, size_t item)
-    ctypedef void RTCOccludedFunc (void* ptr, RTCRay& ray, size_t item)
-    ctypedef void RTCOccludedFunc4 (const void* valid, void* ptr,
-                                    RTCRay4& ray, size_t item)
-    ctypedef void RTCOccludedFunc8 (const void* valid, void* ptr,
-                                    RTCRay8& ray, size_t item)
-    ctypedef void RTCOccludedFunc16 (const void* valid, void* ptr,
+    ctypedef void (*RTCBoundsFunc)(void* ptr, size_t item, RTCBounds& bounds_o)
+    ctypedef void (*RTCIntersectFunc)(void* ptr, RTCRay& ray, size_t item)
+    ctypedef void (*RTCIntersectFunc4)(const void* valid, void* ptr,
+                                       RTCRay4& ray, size_t item)
+    ctypedef void (*RTCIntersectFunc8)(const void* valid, void* ptr,
+                                       RTCRay8& ray, size_t item)
+    ctypedef void (*RTCIntersectFunc16)(const void* valid, void* ptr,
+                                        RTCRay16& ray, size_t item)
+    ctypedef void (*RTCOccludedFunc)(void* ptr, RTCRay& ray, size_t item)
+    ctypedef void (*RTCOccludedFunc4)(const void* valid, void* ptr,
+                                      RTCRay4& ray, size_t item)
+    ctypedef void (*RTCOccludedFunc8)(const void* valid, void* ptr,
+                                      RTCRay8& ray, size_t item)
+    ctypedef void (*RTCOccludedFunc16)(const void* valid, void* ptr,
                                        RTCRay16& ray, size_t item)
     unsigned rtcNewUserGeometry(RTCScene scene, size_t numGeometries)
     void rtcSetBoundsFunction(RTCScene scene, unsigned geomID, RTCBoundsFunc bounds)
