@@ -5,6 +5,11 @@ cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
 
+ctypedef void (*rayqueryFunction)(RTCScene scene, RTCRay& ray)
+cdef enum rayqueryType:
+    intersect,
+    occluded
+
 cdef void error_printer(const rtc.RTCError code, const char *_str):
     print "ERROR CAUGHT IN EMBREE"
     rtc.print_error(code)
@@ -19,12 +24,22 @@ cdef class EmbreeScene:
 
     def run(self, np.ndarray[np.float64_t, ndim=2] vec_origins,
                   np.ndarray[np.float64_t, ndim=2] vec_directions, 
-                  dists=None):
+                  dists=None,query='INTERSECT'):
         rtcCommit(self.scene_i)
         cdef int nv = vec_origins.shape[0]
         cdef int vo_i, vd_i, vd_step
         cdef np.ndarray[np.int32_t, ndim=1] intersect_ids
         cdef np.ndarray[np.float32_t, ndim=1] tfars
+        cdef rayqueryFunction query_function 
+        cdef rayqueryType query_type
+        
+        if query == 'INTERSECT':
+            query_type = intersect
+        elif query == 'OCCLUDED':
+            query_type = occluded
+        else:
+            raise ValueError("Embree ray query type %s not recognized" % (query))
+        
         if dists is None:
             tfars = np.empty(nv, 'float32')
             tfars.fill(1e37)
@@ -36,6 +51,12 @@ cdef class EmbreeScene:
         vd_step = 1
         # If vec_directions is 1 long, we won't be updating it.
         if vec_directions.shape[0] == 1: vd_step = 0
+        
+        if query_type == intersect:
+            query_function = rtcIntersect
+        elif query_type == occluded:
+            query_function = rtcOccluded
+
         for i in range(nv):
             for j in range(3):
                 ray.org[j] = vec_origins[i, j]
@@ -49,8 +70,11 @@ cdef class EmbreeScene:
             ray.mask = -1
             ray.time = 0
             vd_i += vd_step
-            rtcIntersect(self.scene_i, ray)
-            intersect_ids[i] = ray.primID
+            query_function(self.scene_i, ray)   
+            if query_type==intersect:
+                intersect_ids[i] = ray.primID
+            else:
+                intersect_ids[i] = ray.geomID
 
         return intersect_ids
 
