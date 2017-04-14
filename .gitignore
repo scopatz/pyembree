@@ -9,3 +9,5 @@ pyembree/*.pyc
 pyembree.egg-info/
 dist/
 *.png
+
+.idea
