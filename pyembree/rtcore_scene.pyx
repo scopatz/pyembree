@@ -64,7 +64,7 @@ cdef class EmbreeScene:
             ray.time = 0
             vd_i += vd_step
 
-            if query_type==intersect:
+            if query_type == intersect:
                 rtcIntersect(self.scene_i, ray)
                 intersect_ids[i] = ray.primID
             else:
