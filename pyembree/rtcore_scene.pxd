@@ -60,3 +60,7 @@ cdef extern from "embree2/rtcore_scene.h":
 
 cdef class EmbreeScene:
     cdef RTCScene scene_i
+
+cdef enum rayQueryType:
+    intersect,
+    occluded

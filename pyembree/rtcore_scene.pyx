@@ -5,9 +5,6 @@ cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
 
-cdef enum rayQueryType:
-    intersect,
-    occluded
 
 cdef void error_printer(const rtc.RTCError code, const char *_str):
     print "ERROR CAUGHT IN EMBREE"
