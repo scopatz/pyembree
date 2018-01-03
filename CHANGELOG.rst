@@ -4,6 +4,16 @@ pyembree Change Log
 
 .. current developments
 
+v0.1.2
+====================
+
+**Fixed:**
+
+* setup.py and rever.xsh fix
+
+
+
+
 v0.1.1
 ====================
 
