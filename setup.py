@@ -15,6 +15,7 @@ for ext in ext_modules:
 
 setup(
     name="pyembree",
+    version='0.1.0',
     ext_modules=ext_modules,
     zip_safe=False,
     packages=find_packages(),
