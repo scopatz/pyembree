@@ -13,9 +13,9 @@ sigmas = [0.5, 2.0, 4.0]
 def xplane(x):
     return [[[x, -1.0, -1.0],
              [x, -1.0, 1.0],
-             [x, 1.0, -1.0]], 
+             [x, 1.0, -1.0]],
             [[x, -1.0, 1.0],
-             [x, 1.0, -1.0], 
+             [x, 1.0, -1.0],
              [x, 1.0, 1.0]]]
 
 
@@ -57,11 +57,10 @@ for r in range(R):
     intersects, origins, exists = transport_region(r, origins, maxdist, exists)
 
 gi = intersects > -1
-maxdist[exists] = triangles[intersects[gi],:,0]  # get x coord
-#print(maxdist[maxdist > 1.0])
+maxdist[exists] = triangles[intersects[gi],0,0]  # get x coord
 
 for i in range(len(xgrid)):
-    tally[i] += (maxdist >= xgrid[i]).sum() 
+    tally[i] += (maxdist >= xgrid[i]).sum()
 
 plt.plot(xgrid, tally)
 plt.xlabel('x [cm]')
