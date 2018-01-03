@@ -1,7 +1,10 @@
+import sys
 import time
 
 import numpy as np
-import matplotlib.pyplot as plt
+PLOT = '--no-plots' not in sys.argv
+if PLOT:
+    import matplotlib.pyplot as plt
 
 from pyembree import rtcore_scene as rtcs
 from pyembree.mesh_construction import TriangleMesh
@@ -62,8 +65,9 @@ maxdist[exists] = triangles[intersects[gi],0,0]  # get x coord
 for i in range(len(xgrid)):
     tally[i] += (maxdist >= xgrid[i]).sum()
 
-plt.plot(xgrid, tally)
-plt.xlabel('x [cm]')
-plt.ylabel('flux')
-plt.savefig('attenuate.png')
+if PLOT:
+    plt.plot(xgrid, tally)
+    plt.xlabel('x [cm]')
+    plt.ylabel('flux')
+    plt.savefig('attenuate.png')
 

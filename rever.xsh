@@ -5,7 +5,7 @@ $GITHUB_ORG = 'scopatz'
 $WEBSITE_URL = 'https://github.com/scopatz/pyembree'
 
 with! dockeractivity(name='pyembree-examples', lang='sh'):
-    python examples/attenuate.py
+    python examples/attenuate.py --no-plots
 
 $ACTIVITIES = ['pyembree-examples', 'version_bump', 'changelog',
                'tag', 'push_tag', 'conda_forge','ghrelease'
@@ -20,7 +20,7 @@ $CHANGELOG_FILENAME = 'CHANGELOG.rst'
 $CHANGELOG_TEMPLATE = 'TEMPLATE.rst'
 
 $DOCKER_APT_DEPS = ['gcc']
-$DOCKER_CONDA_DEPS = ['numpy', 'embree', 'gcc', 'matplotlib', 'setuptools', 'cython']
+$DOCKER_CONDA_DEPS = ['numpy', 'embree', 'gcc', 'setuptools', 'cython']
 $DOCKER_INSTALL_COMMAND = ('git clean -fdx && '
                            './setup.py install')
 $DOCKER_GIT_NAME = 'Anthony Scopatz'
