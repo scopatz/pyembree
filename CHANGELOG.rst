@@ -4,6 +4,16 @@ pyembree Change Log
 
 .. current developments
 
+v0.1.3
+====================
+
+**Changed:**
+
+* Error logging now uses the `logging` module
+
+
+
+
 v0.1.2
 ====================
 
