@@ -1,15 +1,18 @@
 cimport cython
 cimport numpy as np
 import numpy as np
+import logging
 cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
 
 
+log = logging.getLogger('pyembree')
+
 cdef void error_printer(const rtc.RTCError code, const char *_str):
-    print "ERROR CAUGHT IN EMBREE"
+    log.error("ERROR CAUGHT IN EMBREE")
     rtc.print_error(code)
-    print "ERROR MESSAGE:", _str
+    log.error("ERROR MESSAGE: %s" % _str)
 
 cdef class EmbreeScene:
 
