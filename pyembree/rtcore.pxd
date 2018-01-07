@@ -8,13 +8,13 @@ cdef extern from "embree2/rtcore.h":
     void rtcExit()
 
     cdef enum RTCError:
-        RTC_NO_ERROR 
-        RTC_UNKNOWN_ERROR 
-        RTC_INVALID_ARGUMENT 
-        RTC_INVALID_OPERATION 
-        RTC_OUT_OF_MEMORY 
-        RTC_UNSUPPORTED_CPU 
-        RTC_CANCELLED 
+        RTC_NO_ERROR
+        RTC_UNKNOWN_ERROR
+        RTC_INVALID_ARGUMENT
+        RTC_INVALID_OPERATION
+        RTC_OUT_OF_MEMORY
+        RTC_UNSUPPORTED_CPU
+        RTC_CANCELLED
 
     RTCError rtcGetError()
     ctypedef void (*RTCErrorFunc)(const RTCError code, const char* _str)
