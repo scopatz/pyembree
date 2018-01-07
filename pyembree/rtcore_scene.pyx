@@ -21,10 +21,10 @@ cdef class EmbreeScene:
         rtc.rtcSetErrorFunction(error_printer)
         self.scene_i = rtcNewScene(RTC_SCENE_STATIC, RTC_INTERSECT1)
 
-    def run(self, np.ndarray[np.float64_t, ndim=2] vec_origins,
-                  np.ndarray[np.float64_t, ndim=2] vec_directions, 
                   dists=None,query='INTERSECT'):
         rtcCommit(self.scene_i)
+    def run(self, np.ndarray[np.float32_t, ndim=2] vec_origins,
+                  np.ndarray[np.float32_t, ndim=2] vec_directions,
         cdef int nv = vec_origins.shape[0]
         cdef int vo_i, vd_i, vd_step
         cdef np.ndarray[np.int32_t, ndim=1] intersect_ids
