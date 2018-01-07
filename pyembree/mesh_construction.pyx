@@ -59,6 +59,7 @@ cdef class TriangleMesh:
             self._build_from_flat(scene, vertices)
         else:
             self._build_from_indices(scene, vertices, indices)
+        rtcs.rtcCommit(scene.scene_i)
 
     cdef void _build_from_flat(self, rtcs.EmbreeScene scene, 
                                np.ndarray tri_vertices):
@@ -171,6 +172,7 @@ cdef class ElementMesh(TriangleMesh):
             self._build_from_triangles(scene, vertices, indices)
         else:
             raise NotImplementedError
+        rtcs.rtcCommit(scene.scene_i)
 
     cdef void _build_from_quads(self, rtcs.EmbreeScene scene,
                                 np.ndarray quad_vertices, 

@@ -22,7 +22,6 @@ cdef class EmbreeScene:
         self.scene_i = rtcNewScene(RTC_SCENE_STATIC, RTC_INTERSECT1)
 
                   dists=None,query='INTERSECT'):
-        rtcCommit(self.scene_i)
     def run(self, np.ndarray[np.float32_t, ndim=2] vec_origins,
                   np.ndarray[np.float32_t, ndim=2] vec_directions,
         cdef int nv = vec_origins.shape[0]
