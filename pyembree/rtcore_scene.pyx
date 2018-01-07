@@ -21,28 +21,37 @@ cdef class EmbreeScene:
         rtc.rtcSetErrorFunction(error_printer)
         self.scene_i = rtcNewScene(RTC_SCENE_STATIC, RTC_INTERSECT1)
 
-                  dists=None,query='INTERSECT'):
     def run(self, np.ndarray[np.float32_t, ndim=2] vec_origins,
                   np.ndarray[np.float32_t, ndim=2] vec_directions,
+                  dists=None,query='INTERSECT',output=None):
         cdef int nv = vec_origins.shape[0]
         cdef int vo_i, vd_i, vd_step
         cdef np.ndarray[np.int32_t, ndim=1] intersect_ids
         cdef np.ndarray[np.float32_t, ndim=1] tfars
         cdef rayQueryType query_type
-        
+
         if query == 'INTERSECT':
             query_type = intersect
         elif query == 'OCCLUDED':
             query_type = occluded
         else:
             raise ValueError("Embree ray query type %s not recognized" % (query))
-        
+
         if dists is None:
             tfars = np.empty(nv, 'float32')
             tfars.fill(1e37)
         else:
             tfars = dists
-        intersect_ids = np.empty(nv, dtype="int32")
+
+        if output:
+            u = np.empty(nv, dtype="float32")
+            v = np.empty(nv, dtype="float32")
+            Ng = np.empty((nv, 3), dtype="float32")
+            primID = np.empty(nv, dtype="int32")
+            geomID = np.empty(nv, dtype="int32")
+        else:
+            intersect_ids = np.empty(nv, dtype="int32")
+
         cdef rtcr.RTCRay ray
         vd_i = 0
         vd_step = 1
@@ -54,7 +63,6 @@ cdef class EmbreeScene:
                 ray.org[j] = vec_origins[i, j]
                 ray.dir[j] = vec_directions[vd_i, j]
             ray.tnear = 0.0
-            #ray.tfar = 1e37
             ray.tfar = tfars[i]
             ray.geomID = rtcg.RTC_INVALID_GEOMETRY_ID
             ray.primID = rtcg.RTC_INVALID_GEOMETRY_ID
@@ -65,12 +73,24 @@ cdef class EmbreeScene:
 
             if query_type == intersect:
                 rtcIntersect(self.scene_i, ray)
-                intersect_ids[i] = ray.primID
+                if not output:
+                    intersect_ids[i] = ray.primID
             else:
                 rtcOccluded(self.scene_i, ray)
-                intersect_ids[i] = ray.geomID
-
-        return intersect_ids
+                if not output:
+                    intersect_ids[i] = ray.geomID
+            if output:
+                primID[i] = ray.primID
+                geomID[i] = ray.geomID
+                u[i] = ray.u
+                v[i] = ray.v
+                tfars[i] = ray.tfar
+                for j in range(3):
+                    Ng[i, j] = ray.Ng[j]
+        if output:
+            return {'u':u, 'v':v, 'Ng': Ng, 'tfar': tfars, 'primID': primID, 'geomID': geomID}
+        else:
+            return intersect_ids
 
     def __dealloc__(self):
         rtcDeleteScene(self.scene_i)
