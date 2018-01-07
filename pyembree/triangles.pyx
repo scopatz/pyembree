@@ -1,5 +1,5 @@
 cimport numpy as np
-cimport rtcore as rtc 
+cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_scene as rtcs
 cimport rtcore_geometry as rtcg
@@ -13,7 +13,7 @@ ctypedef Vec3f (*renderPixelFunc)(float x, float y,
 
 def run_triangles():
     pass
-    
+
 cdef unsigned int addCube(rtcs.RTCScene scene_i):
     cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene_i,
                 rtcg.RTC_GEOMETRY_STATIC, 12, 8, 1)
@@ -21,35 +21,35 @@ cdef unsigned int addCube(rtcs.RTCScene scene_i):
     vertices[0].x = -1
     vertices[0].y = -1
     vertices[0].z = -1
-    
+
     vertices[1].x = -1
     vertices[1].y = -1
     vertices[1].z = +1
-    
+
     vertices[2].x = -1
     vertices[2].y = +1
     vertices[2].z = -1
-    
+
     vertices[3].x = -1
     vertices[3].y = +1
     vertices[3].z = +1
-    
+
     vertices[4].x = +1
     vertices[4].y = -1
     vertices[4].z = -1
-    
+
     vertices[5].x = +1
     vertices[5].y = -1
     vertices[5].z = +1
-    
+
     vertices[6].x = +1
     vertices[6].y = +1
     vertices[6].z = -1
-    
+
     vertices[7].x = +1
     vertices[7].y = +1
     vertices[7].z = +1
-    
+
     rtcg.rtcUnmapBuffer(scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
     cdef Vec3f *colors = <Vec3f*> malloc(12*sizeof(Vec3f))
@@ -157,7 +157,7 @@ cdef unsigned int addCube(rtcs.RTCScene scene_i):
     rtcg.rtcUnmapBuffer(scene_i, mesh, rtcg.RTC_INDEX_BUFFER)
 
     return mesh
-  
+
 cdef unsigned int addGroundPlane (rtcs.RTCScene scene_i):
     cdef unsigned int mesh = rtcg.rtcNewTriangleMesh (scene_i,
             rtcg.RTC_GEOMETRY_STATIC, 2, 4, 1)
@@ -166,15 +166,15 @@ cdef unsigned int addGroundPlane (rtcs.RTCScene scene_i):
     vertices[0].x = -10
     vertices[0].y = -2
     vertices[0].z = -10
-    
+
     vertices[1].x = -10
     vertices[1].y = -2
     vertices[1].z = +10
-    
+
     vertices[2].x = +10
     vertices[2].y = -2
     vertices[2].z = -10
-    
+
     vertices[3].x = +10
     vertices[3].y = -2
     vertices[3].z = +10
