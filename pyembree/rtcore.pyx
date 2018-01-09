@@ -20,3 +20,11 @@ cdef void print_error(RTCError code):
         log.error("ERROR: Cancelled")
     else:
         raise RuntimeError
+
+
+cdef class EmbreeDevice:
+    def __init__(self):
+        self.device = rtcNewDevice(NULL)
+
+    def __dealloc__(self):
+        rtcDeleteDevice(self.device)
