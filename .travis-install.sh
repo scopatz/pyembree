@@ -6,8 +6,6 @@ set -e  # exit as soon as an error occurs
 msg=$(git log --pretty=oneline -1)
 echo "Building commit: $msg"
 
-conda config --append channels conda-forge
-
 # build
 conda build --no-test recipes/pyembree
 
