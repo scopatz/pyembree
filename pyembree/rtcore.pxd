@@ -3,6 +3,7 @@
 cimport cython
 cimport numpy as np
 
+
 cdef extern from "embree2/rtcore.h":
     void rtcInit(const char* cfg)
     void rtcExit()
@@ -16,9 +17,22 @@ cdef extern from "embree2/rtcore.h":
         RTC_UNSUPPORTED_CPU
         RTC_CANCELLED
 
+    # typedef struct __RTCDevice {}* RTCDevice;
+    ctypedef void* RTCDevice
+
+    RTCDevice rtcNewDevice(const char* cfg)
+    void rtcDeleteDevice(RTCDevice device)
+
     RTCError rtcGetError()
     ctypedef void (*RTCErrorFunc)(const RTCError code, const char* _str)
     void rtcSetErrorFunction(RTCErrorFunc func)
+
+    # Embree 2.14.0-0
+    void rtcDeviceSetErrorFunction(RTCDevice device, RTCErrorFunc func)
+
+    # Embree 2.15.1
+    ctypedef void (*RTCErrorFunc2)(void* userPtr, const RTCError code, const char* str)
+    void rtcDeviceSetErrorFunction2(RTCDevice device, RTCErrorFunc2 func, void* userPtr)
 
     ctypedef bint RTCMemoryMonitorFunc(const ssize_t _bytes, const bint post)
     void rtcSetMemoryMonitorFunction(RTCMemoryMonitorFunc func)
@@ -36,3 +50,6 @@ cdef struct Vec3f:
     float x, y, z
 
 cdef void print_error(RTCError code)
+
+cdef class EmbreeDevice:
+    cdef RTCDevice device
