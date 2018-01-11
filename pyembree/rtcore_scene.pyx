@@ -5,21 +5,25 @@ import logging
 cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
+from rtcore cimport RTCDevice
+from rtcore cimport EmbreeDevice
 
 
 log = logging.getLogger('pyembree')
 
+# Embree 2.17.1
+# cdef void error_printer(void* userPtr, const rtc.RTCError code, const char *_str):
+# Embree 2.14.1
 cdef void error_printer(const rtc.RTCError code, const char *_str):
     log.error("ERROR CAUGHT IN EMBREE")
     rtc.print_error(code)
     log.error("ERROR MESSAGE: %s" % _str)
 
-cdef class EmbreeScene:
 
-    def __init__(self):
-        rtc.rtcInit(NULL)
-        rtc.rtcSetErrorFunction(error_printer)
-        self.scene_i = rtcNewScene(RTC_SCENE_STATIC, RTC_INTERSECT1)
+cdef class EmbreeScene:
+    def __init__(self, EmbreeDevice device):
+        rtc.rtcDeviceSetErrorFunction(device.device, error_printer)
+        self.scene_i = rtcDeviceNewScene(device.device, RTC_SCENE_STATIC, RTC_INTERSECT1)
 
     def run(self, np.ndarray[np.float32_t, ndim=2] vec_origins,
                   np.ndarray[np.float32_t, ndim=2] vec_directions,
