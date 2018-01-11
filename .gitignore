@@ -12,5 +12,6 @@ dist/
 *.png
 
 .idea
+.vscode
 # Rever
 rever/
