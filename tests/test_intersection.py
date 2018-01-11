@@ -14,10 +14,21 @@ def xplane(x):
              [x, -1.0, +1.0]]]
 
 
+class TestPyEmbree(TestCase):
+    def test_pyembree_should_be_able_to_create_a_scene(self):
+        embreeDevice = rtc.EmbreeDevice()
+        scene = rtcs.EmbreeScene(embreeDevice)
+
+    def test_pyembree_should_be_able_to_create_several_scenes(self):
+        embreeDevice = rtc.EmbreeDevice()
+        scene1 = rtcs.EmbreeScene(embreeDevice)
+        scene2 = rtcs.EmbreeScene(embreeDevice)
+
+
 class TestIntersectionTriangles(TestCase):
 
     def setUp(self):
-        """Initialisation des tests."""
+        """Initialisation"""
         N = 4
         triangles = xplane(7.0)
         triangles = np.array(triangles, 'float32')
