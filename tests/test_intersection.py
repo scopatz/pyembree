@@ -14,6 +14,14 @@ def xplane(x):
              [x, -1.0, +1.0]]]
 
 
+def xplane_only_points(x):
+    # Indices are [[0, 1, 2], [1, 3, 2]]
+    return [[x, -1.0, -1.0],
+            [x, +1.0, -1.0],
+            [x, -1.0, +1.0],
+            [x, +1.0, +1.0]]
+
+
 def define_rays_origins_and_directions():
     N = 4
     origins = np.zeros((N, 3), dtype='float32')
@@ -53,6 +61,42 @@ class TestIntersectionTriangles(TestCase):
         self.embreeDevice = rtc.EmbreeDevice()
         self.scene = rtcs.EmbreeScene(self.embreeDevice)
         mesh = TriangleMesh(self.scene, triangles)
+
+        origins, dirs = define_rays_origins_and_directions()
+        self.origins = origins
+        self.dirs = dirs
+
+    def test_intersect_simple(self):
+        res = self.scene.run(self.origins, self.dirs)
+        self.assertTrue([0, 1, 1, -1], res)
+
+    def test_intersect(self):
+        res = self.scene.run(self.origins, self.dirs, output=1)
+
+        self.assertTrue([0, 0, 0, -1], res['geomID'])
+
+        ray_inter = res['geomID'] >= 0
+        primID = res['primID'][ray_inter]
+        u = res['u'][ray_inter]
+        v = res['v'][ray_inter]
+        tfar = res['tfar'][ray_inter]
+        self.assertTrue([ 0, 1, 1], primID)
+        self.assertTrue(np.allclose([6.9, 6.9, 6.9], tfar))
+        self.assertTrue(np.allclose([0.4, 0.1, 0.15], u))
+        self.assertTrue(np.allclose([0.5, 0.4, 0.35], v))
+
+
+class TestIntersectionTrianglesFromIndices(TestCase):
+
+    def setUp(self):
+        """Initialisation"""
+        points = xplane_only_points(7.0)
+        points = np.array(points, 'float32')
+        indices = np.array([[0, 1, 2], [1, 3, 2]], 'uint32')
+
+        self.embreeDevice = rtc.EmbreeDevice()
+        self.scene = rtcs.EmbreeScene(self.embreeDevice)
+        mesh = TriangleMesh(self.scene, points, indices)
 
         origins, dirs = define_rays_origins_and_directions()
         self.origins = origins
