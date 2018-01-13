@@ -28,3 +28,8 @@ cdef class EmbreeDevice:
 
     def __dealloc__(self):
         rtcDeleteDevice(self.device)
+
+    def __repr__(self):
+        return 'Embree version:  {0}.{1}.{2}'.format(RTCORE_VERSION_MAJOR,
+                                                     RTCORE_VERSION_MINOR,
+                                                     RTCORE_VERSION_PATCH)
