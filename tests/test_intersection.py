@@ -14,6 +14,20 @@ def xplane(x):
              [x, -1.0, +1.0]]]
 
 
+def define_rays_origins_and_directions():
+    N = 4
+    origins = np.zeros((N, 3), dtype='float32')
+    origins[:,0] = 0.1
+    origins[0,1] = -0.2
+    origins[1,1] = +0.2
+    origins[2,1] = +0.3
+    origins[3,1] = -8.2
+
+    dirs = np.zeros((N, 3), dtype='float32')
+    dirs[:, 0] = 1.0
+    return origins, dirs
+
+
 class TestPyEmbree(TestCase):
     def test_pyembree_should_be_able_to_display_embree_version(self):
         embreeDevice = rtc.EmbreeDevice()
@@ -33,7 +47,6 @@ class TestIntersectionTriangles(TestCase):
 
     def setUp(self):
         """Initialisation"""
-        N = 4
         triangles = xplane(7.0)
         triangles = np.array(triangles, 'float32')
 
@@ -41,16 +54,7 @@ class TestIntersectionTriangles(TestCase):
         self.scene = rtcs.EmbreeScene(self.embreeDevice)
         mesh = TriangleMesh(self.scene, triangles)
 
-        origins = np.zeros((N, 3), dtype='float32')
-        origins[:,0] = 0.1
-        origins[0,1] = -0.2
-        origins[1,1] = +0.2
-        origins[2,1] = +0.3
-        origins[3,1] = -8.2
-
-        dirs = np.zeros((N, 3), dtype='float32')
-        dirs[:, 0] = 1.0
-
+        origins, dirs = define_rays_origins_and_directions()
         self.origins = origins
         self.dirs = dirs
 
