@@ -15,6 +15,10 @@ def xplane(x):
 
 
 class TestPyEmbree(TestCase):
+    def test_pyembree_should_be_able_to_display_embree_version(self):
+        embreeDevice = rtc.EmbreeDevice()
+        print(embreeDevice)
+
     def test_pyembree_should_be_able_to_create_a_scene(self):
         embreeDevice = rtc.EmbreeDevice()
         scene = rtcs.EmbreeScene(embreeDevice)
