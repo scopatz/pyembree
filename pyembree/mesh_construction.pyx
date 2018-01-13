@@ -167,16 +167,16 @@ cdef class ElementMesh(TriangleMesh):
         # If it's quads, we can build the mesh slightly differently.
         # http://stackoverflow.com/questions/23723993/converting-quadriladerals-in-an-obj-file-into-triangles
         if indices.shape[1] == 8:
-            self._build_from_quads(scene, vertices, indices)
+            self._build_from_hexahedra(scene, vertices, indices)
         elif indices.shape[1] == 4:
             self._build_from_tetrahedra(scene, vertices, indices)
         else:
             raise NotImplementedError
         rtcs.rtcCommit(scene.scene_i)
 
-    cdef void _build_from_quads(self, rtcs.EmbreeScene scene,
-                                np.ndarray quad_vertices,
-                                np.ndarray quad_indices):
+    cdef void _build_from_hexahedra(self, rtcs.EmbreeScene scene,
+                                    np.ndarray quad_vertices,
+                                    np.ndarray quad_indices):
 
         cdef int i, j
         cdef int nv = quad_vertices.shape[0]
