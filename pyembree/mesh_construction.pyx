@@ -109,9 +109,9 @@ cdef class TriangleMesh:
                                                     rtcg.RTC_VERTEX_BUFFER)
 
         for i in range(nv):
-                vertices[i].x = tri_vertices[i, 0]
-                vertices[i].y = tri_vertices[i, 1]
-                vertices[i].z = tri_vertices[i, 2]
+            vertices[i].x = tri_vertices[i, 0]
+            vertices[i].y = tri_vertices[i, 1]
+            vertices[i].z = tri_vertices[i, 2]
 
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
@@ -169,7 +169,7 @@ cdef class ElementMesh(TriangleMesh):
         if indices.shape[1] == 8:
             self._build_from_quads(scene, vertices, indices)
         elif indices.shape[1] == 4:
-            self._build_from_triangles(scene, vertices, indices)
+            self._build_from_tetrahedra(scene, vertices, indices)
         else:
             raise NotImplementedError
         rtcs.rtcCommit(scene.scene_i)
@@ -214,9 +214,9 @@ cdef class ElementMesh(TriangleMesh):
         self.indices = triangles
         self.mesh = mesh
 
-    cdef void _build_from_triangles(self, rtcs.EmbreeScene scene,
-                                    np.ndarray tetra_vertices,
-                                    np.ndarray tetra_indices):
+    cdef void _build_from_tetrahedra(self, rtcs.EmbreeScene scene,
+                                     np.ndarray tetra_vertices,
+                                     np.ndarray tetra_indices):
 
         cdef int i, j
         cdef int nv = tetra_vertices.shape[0]
@@ -233,9 +233,9 @@ cdef class ElementMesh(TriangleMesh):
                         rtcg.RTC_VERTEX_BUFFER)
 
         for i in range(nv):
-                vertices[i].x = tetra_vertices[i, 0]
-                vertices[i].y = tetra_vertices[i, 1]
-                vertices[i].z = tetra_vertices[i, 2]
+            vertices[i].x = tetra_vertices[i, 0]
+            vertices[i].y = tetra_vertices[i, 1]
+            vertices[i].z = tetra_vertices[i, 2]
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
         # Now build up the triangles
