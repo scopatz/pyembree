@@ -5,8 +5,6 @@ import logging
 cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
-from rtcore cimport RTCDevice
-from rtcore cimport EmbreeDevice
 
 
 log = logging.getLogger('pyembree')
@@ -25,9 +23,11 @@ cdef void error_printer(const rtc.RTCError code, const char *_str):
 
 
 cdef class EmbreeScene:
-    def __init__(self, EmbreeDevice device=None):
+    def __init__(self, rtc.EmbreeDevice device=None):
         if device is None:
-            device = EmbreeDevice()
+            # We store the embree device inside EmbreeScene to avoid premature deletion
+            self.device = rtc.EmbreeDevice()
+            device = self.device
         rtc.rtcDeviceSetErrorFunction(device.device, error_printer)
         self.scene_i = rtcDeviceNewScene(device.device, RTC_SCENE_STATIC, RTC_INTERSECT1)
 
