@@ -62,6 +62,8 @@ cdef extern from "embree2/rtcore_scene.h":
 
 cdef class EmbreeScene:
     cdef RTCScene scene_i
+    # Optional device used if not given, it should be as input of EmbreeScene
+    cdef rtc.EmbreeDevice device
 
 cdef enum rayQueryType:
     intersect,
