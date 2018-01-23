@@ -11,10 +11,14 @@ from rtcore cimport EmbreeDevice
 
 log = logging.getLogger('pyembree')
 
-# Embree 2.17.1
-# cdef void error_printer(void* userPtr, const rtc.RTCError code, const char *_str):
-# Embree 2.14.1
 cdef void error_printer(const rtc.RTCError code, const char *_str):
+    """
+    error_printer function depends on embree version
+    Embree 2.14.1
+    -> cdef void error_printer(const rtc.RTCError code, const char *_str):
+    Embree 2.17.1
+    -> cdef void error_printer(void* userPtr, const rtc.RTCError code, const char *_str):
+    """
     log.error("ERROR CAUGHT IN EMBREE")
     rtc.print_error(code)
     log.error("ERROR MESSAGE: %s" % _str)
