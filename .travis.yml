@@ -37,4 +37,5 @@ script:
    - export PATH="$HOME/miniconda/bin:$PATH"
    - export LD_LIBRARY_PATH="$HOME/miniconda/lib:$LD_LIBRARY_PATH"
    - nosetests -w tests
-
+   - echo "Running all examples"
+   - cd examples && for i in `find . -type f -name "*.py"`; do echo $i; python $i --no-plots; done && cd ..
