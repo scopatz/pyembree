@@ -50,6 +50,8 @@ class TestPyEmbree(TestCase):
         scene1 = rtcs.EmbreeScene(embreeDevice)
         scene2 = rtcs.EmbreeScene(embreeDevice)
 
+    def test_pyembree_should_be_able_to_create_a_device_if_not_provided(self):
+        scene = rtcs.EmbreeScene()
 
 class TestIntersectionTriangles(TestCase):
 
