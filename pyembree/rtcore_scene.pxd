@@ -27,10 +27,12 @@ cdef extern from "embree2/rtcore_scene.h":
         RTC_INTERSECT8
         RTC_INTERSECT16
 
-
+    # ctypedef void* RTCDevice
     ctypedef void* RTCScene
 
     RTCScene rtcNewScene(RTCSceneFlags flags, RTCAlgorithmFlags aflags)
+
+    RTCScene rtcDeviceNewScene(rtc.RTCDevice device, RTCSceneFlags flags, RTCAlgorithmFlags aflags)
 
     ctypedef bint (*RTCProgressMonitorFunc)(void* ptr, const double n)
 
@@ -60,6 +62,8 @@ cdef extern from "embree2/rtcore_scene.h":
 
 cdef class EmbreeScene:
     cdef RTCScene scene_i
+    # Optional device used if not given, it should be as input of EmbreeScene
+    cdef rtc.EmbreeDevice device
 
 cdef enum rayQueryType:
     intersect,

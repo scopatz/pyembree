@@ -30,9 +30,9 @@ mesh = TriangleMesh(scene, triangles)
 xgrid = np.linspace(0.0, 3.0, 100)
 tally = np.zeros(len(xgrid), dtype=int)
 
-origins = np.zeros((N, 3), dtype='float64')
+origins = np.zeros((N, 3), dtype='float32')
 origins[:, 0] += 1e-8
-dirs = np.zeros((N, 3))
+dirs = np.zeros((N, 3), dtype='float32')
 dirs[:, 0] = 1.0
 
 maxdist = np.empty(N, dtype='float32')
@@ -51,7 +51,7 @@ def transport_region(r, origins, maxdist, exist):
 
     bi = intersects == -1
     maxdist[exist[bi]] = origins[bi, 0] + dists[bi]
-    neworigins = np.asarray(triangles[intersects[~bi],0,:], dtype='float64')
+    neworigins = np.asarray(triangles[intersects[~bi],0,:], dtype='float32')
     neworigins[:,1:] = 0.0
     exist = exist[~bi]
     return intersects, neworigins, exist

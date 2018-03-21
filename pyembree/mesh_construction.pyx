@@ -1,11 +1,11 @@
 cimport numpy as np
-cimport rtcore as rtc 
+cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_scene as rtcs
 cimport rtcore_geometry as rtcg
 cimport rtcore_geometry_user as rtcgu
-from rtcore cimport Vertex, Triangle, Vec3f
-from libc.stdlib cimport malloc, free
+from rtcore cimport Vertex, Triangle
+
 
 cdef extern from "mesh_construction.h":
     int triangulate_hex[12][3]
@@ -14,8 +14,8 @@ cdef extern from "mesh_construction.h":
 cdef class TriangleMesh:
     r'''
 
-    This class constructs a polygon mesh with triangular elements and 
-    adds it to the scene. 
+    This class constructs a polygon mesh with triangular elements and
+    adds it to the scene.
 
     Parameters
     ----------
@@ -23,28 +23,28 @@ cdef class TriangleMesh:
     scene : EmbreeScene
         This is the scene to which the constructed polygons will be
         added.
-    vertices : a np.ndarray of floats. 
-        This specifies the x, y, and z coordinates of the vertices in 
-        the polygon mesh. This should either have the shape 
+    vertices : a np.ndarray of floats.
+        This specifies the x, y, and z coordinates of the vertices in
+        the polygon mesh. This should either have the shape
         (num_triangles, 3, 3), or the shape (num_vertices, 3), depending
         on the value of the `indices` parameter.
     indices : either None, or a np.ndarray of ints
         If None, then vertices must have the shape (num_triangles, 3, 3).
         In this case, `vertices` specifices the coordinates of each
-        vertex of each triangle in the mesh, with vertices being 
+        vertex of each triangle in the mesh, with vertices being
         duplicated if they are shared between triangles. For example,
-        if indices is None, then vertices[2][1][0] should give you 
+        if indices is None, then vertices[2][1][0] should give you
         the x-coordinate of the 2nd vertex of the 3rd triangle.
         If indices is a np.ndarray, then it must have the shape
         (num_triangles, 3), and `vertices` must have the shape
-        (num_vertices, 3). In this case, indices[2][1] tells you 
+        (num_vertices, 3). In this case, indices[2][1] tells you
         the index of the 2nd vertex of the 3rd triangle in `indices`,
         while vertices[5][2] tells you the z-coordinate of the 6th
         vertex in the mesh. Note that the indexing is assumed to be
         zero-based. In this setup, vertices can be shared between
         triangles, and the number of vertices can be less than 3 times
         the number of triangles.
-            
+
     '''
 
     cdef Vertex* vertices
@@ -59,8 +59,9 @@ cdef class TriangleMesh:
             self._build_from_flat(scene, vertices)
         else:
             self._build_from_indices(scene, vertices, indices)
+        rtcs.rtcCommit(scene.scene_i)
 
-    cdef void _build_from_flat(self, rtcs.EmbreeScene scene, 
+    cdef void _build_from_flat(self, rtcs.EmbreeScene scene,
                                np.ndarray tri_vertices):
         cdef int i, j
         cdef int nt = tri_vertices.shape[0]
@@ -68,8 +69,8 @@ cdef class TriangleMesh:
         # but also means we have exactly three times as many vertices as
         # triangles.
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
-                    rtcg.RTC_GEOMETRY_STATIC, nt, nt*3, 1) 
-        
+                    rtcg.RTC_GEOMETRY_STATIC, nt, nt*3, 1)
+
         cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene.scene_i, mesh,
                         rtcg.RTC_VERTEX_BUFFER)
 
@@ -100,7 +101,7 @@ cdef class TriangleMesh:
         cdef int nt = tri_indices.shape[0]
 
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
-                    rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1) 
+                    rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1)
 
         # set up vertex and triangle arrays. In this case, we just read
         # them directly from the inputs
@@ -108,9 +109,9 @@ cdef class TriangleMesh:
                                                     rtcg.RTC_VERTEX_BUFFER)
 
         for i in range(nv):
-                vertices[i].x = tri_vertices[i, 0]
-                vertices[i].y = tri_vertices[i, 1]
-                vertices[i].z = tri_vertices[i, 2]
+            vertices[i].x = tri_vertices[i, 0]
+            vertices[i].y = tri_vertices[i, 1]
+            vertices[i].z = tri_vertices[i, 2]
 
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
@@ -131,7 +132,7 @@ cdef class TriangleMesh:
 cdef class ElementMesh(TriangleMesh):
     r'''
 
-    Currently, we handle non-triangular mesh types by converting them 
+    Currently, we handle non-triangular mesh types by converting them
     to triangular meshes. This class performs this transformation.
     Currently, this is implemented for hexahedral and tetrahedral
     meshes.
@@ -142,39 +143,40 @@ cdef class ElementMesh(TriangleMesh):
     scene : EmbreeScene
         This is the scene to which the constructed polygons will be
         added.
-    vertices : a np.ndarray of floats. 
-        This specifies the x, y, and z coordinates of the vertices in 
-        the polygon mesh. This should either have the shape 
-        (num_vertices, 3). For example, vertices[2][1] should give the 
+    vertices : a np.ndarray of floats.
+        This specifies the x, y, and z coordinates of the vertices in
+        the polygon mesh. This should either have the shape
+        (num_vertices, 3). For example, vertices[2][1] should give the
         y-coordinate of the 3rd vertex in the mesh.
     indices : a np.ndarray of ints
-        This should either have the shape (num_elements, 4) or 
-        (num_elements, 8) for tetrahedral and hexahedral meshes, 
-        respectively. For tetrahedral meshes, each element will 
+        This should either have the shape (num_elements, 4) or
+        (num_elements, 8) for tetrahedral and hexahedral meshes,
+        respectively. For tetrahedral meshes, each element will
         be represented by four triangles in the scene. For hex meshes,
-        each element will be represented by 12 triangles, 2 for each 
+        each element will be represented by 12 triangles, 2 for each
         face. For hex meshes, we assume that the node ordering is as
-        defined here: 
+        defined here:
         http://homepages.cae.wisc.edu/~tautges/papers/cnmev3.pdf
-            
+
     '''
 
     def __init__(self, rtcs.EmbreeScene scene,
-                 np.ndarray vertices, 
+                 np.ndarray vertices,
                  np.ndarray indices):
         # We need now to figure out if we've been handed quads or tetrahedra.
         # If it's quads, we can build the mesh slightly differently.
         # http://stackoverflow.com/questions/23723993/converting-quadriladerals-in-an-obj-file-into-triangles
         if indices.shape[1] == 8:
-            self._build_from_quads(scene, vertices, indices)
+            self._build_from_hexahedra(scene, vertices, indices)
         elif indices.shape[1] == 4:
-            self._build_from_triangles(scene, vertices, indices)
+            self._build_from_tetrahedra(scene, vertices, indices)
         else:
             raise NotImplementedError
+        rtcs.rtcCommit(scene.scene_i)
 
-    cdef void _build_from_quads(self, rtcs.EmbreeScene scene,
-                                np.ndarray quad_vertices, 
-                                np.ndarray quad_indices):
+    cdef void _build_from_hexahedra(self, rtcs.EmbreeScene scene,
+                                    np.ndarray quad_vertices,
+                                    np.ndarray quad_indices):
 
         cdef int i, j
         cdef int nv = quad_vertices.shape[0]
@@ -185,7 +187,7 @@ cdef class ElementMesh(TriangleMesh):
         cdef int nt = 6*2*ne
 
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
-                    rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1) 
+                    rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1)
 
         # first just copy over the vertices
         cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene.scene_i, mesh,
@@ -212,9 +214,9 @@ cdef class ElementMesh(TriangleMesh):
         self.indices = triangles
         self.mesh = mesh
 
-    cdef void _build_from_triangles(self, rtcs.EmbreeScene scene,
-                                    np.ndarray tetra_vertices, 
-                                    np.ndarray tetra_indices):
+    cdef void _build_from_tetrahedra(self, rtcs.EmbreeScene scene,
+                                     np.ndarray tetra_vertices,
+                                     np.ndarray tetra_indices):
 
         cdef int i, j
         cdef int nv = tetra_vertices.shape[0]
@@ -224,16 +226,16 @@ cdef class ElementMesh(TriangleMesh):
         cdef int nt = 4*ne
 
         cdef unsigned int mesh = rtcg.rtcNewTriangleMesh(scene.scene_i,
-                    rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1) 
+                    rtcg.RTC_GEOMETRY_STATIC, nt, nv, 1)
 
         # Just copy over the vertices
         cdef Vertex* vertices = <Vertex*> rtcg.rtcMapBuffer(scene.scene_i, mesh,
                         rtcg.RTC_VERTEX_BUFFER)
 
         for i in range(nv):
-                vertices[i].x = tetra_vertices[i, 0]
-                vertices[i].y = tetra_vertices[i, 1]
-                vertices[i].z = tetra_vertices[i, 2]
+            vertices[i].x = tetra_vertices[i, 0]
+            vertices[i].y = tetra_vertices[i, 1]
+            vertices[i].z = tetra_vertices[i, 2]
         rtcg.rtcUnmapBuffer(scene.scene_i, mesh, rtcg.RTC_VERTEX_BUFFER)
 
         # Now build up the triangles
