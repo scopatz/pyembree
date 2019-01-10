@@ -73,6 +73,11 @@ class TestIntersectionTriangles(TestCase):
         res = self.scene.run(self.origins, self.dirs)
         self.assertTrue([0, 1, 1, -1], res)
 
+    def test_intersect_distance(self):
+        res = self.scene.run(self.origins, self.dirs,query='DISTANCE')
+        self.assertTrue(np.allclose([6.9, 6.9, 6.9,1e37], res))
+
+
     def test_intersect(self):
         res = self.scene.run(self.origins, self.dirs, output=1)
 
