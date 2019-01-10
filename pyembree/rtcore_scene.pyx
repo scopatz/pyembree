@@ -37,7 +37,6 @@ cdef class EmbreeScene:
         cdef int nv = vec_origins.shape[0]
         cdef int vo_i, vd_i, vd_step
         cdef np.ndarray[np.int32_t, ndim=1] intersect_ids
-        cdef np.ndarray[np.float32_t, ndim=1] intersect_dist
         cdef np.ndarray[np.float32_t, ndim=1] tfars
         cdef rayQueryType query_type
 
@@ -65,10 +64,7 @@ cdef class EmbreeScene:
             primID = np.empty(nv, dtype="int32")
             geomID = np.empty(nv, dtype="int32")
         else:
-            if query_type == distance:
-                intersect_dist = np.empty(nv, dtype="float32")
-            else:
-                intersect_ids = np.empty(nv, dtype="int32")
+            intersect_ids = np.empty(nv, dtype="int32")
 
         cdef rtcr.RTCRay ray
         vd_i = 0
@@ -95,7 +91,7 @@ cdef class EmbreeScene:
                     if query_type == intersect:
                         intersect_ids[i] = ray.primID
                     else:
-                        intersect_dist[i] = ray.tfar
+                        tfars[i] = ray.tfar
                 else:
                     primID[i] = ray.primID
                     geomID[i] = ray.geomID
@@ -112,7 +108,7 @@ cdef class EmbreeScene:
             return {'u':u, 'v':v, 'Ng': Ng, 'tfar': tfars, 'primID': primID, 'geomID': geomID}
         else:
             if query_type == distance:
-                return intersect_dist
+                return tfars
             else:
                 return intersect_ids
 
