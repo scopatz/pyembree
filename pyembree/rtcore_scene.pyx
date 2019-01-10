@@ -37,6 +37,7 @@ cdef class EmbreeScene:
         cdef int nv = vec_origins.shape[0]
         cdef int vo_i, vd_i, vd_step
         cdef np.ndarray[np.int32_t, ndim=1] intersect_ids
+        cdef np.ndarray[np.float32_t, ndim=1] intersect_dist
         cdef np.ndarray[np.float32_t, ndim=1] tfars
         cdef rayQueryType query_type
 
@@ -44,8 +45,12 @@ cdef class EmbreeScene:
             query_type = intersect
         elif query == 'OCCLUDED':
             query_type = occluded
+        elif query == 'DISTANCE':
+            query_type = distance
+
         else:
-            raise ValueError("Embree ray query type %s not recognized" % (query))
+            raise ValueError("Embree ray query type %s not recognized." 
+                "\nAccepted types are (INTERSECT,OCCLUDED,DISTANCE)" % (query))
 
         if dists is None:
             tfars = np.empty(nv, 'float32')
@@ -60,7 +65,10 @@ cdef class EmbreeScene:
             primID = np.empty(nv, dtype="int32")
             geomID = np.empty(nv, dtype="int32")
         else:
-            intersect_ids = np.empty(nv, dtype="int32")
+            if query_type == distance:
+                intersect_dist = np.empty(nv, dtype="float32")
+            else:
+                intersect_ids = np.empty(nv, dtype="int32")
 
         cdef rtcr.RTCRay ray
         vd_i = 0
@@ -81,26 +89,32 @@ cdef class EmbreeScene:
             ray.time = 0
             vd_i += vd_step
 
-            if query_type == intersect:
+            if query_type == intersect or query_type == distance:
                 rtcIntersect(self.scene_i, ray)
                 if not output:
-                    intersect_ids[i] = ray.primID
+                    if query_type == intersect:
+                        intersect_ids[i] = ray.primID
+                    else:
+                        intersect_dist[i] = ray.tfar
+                else:
+                    primID[i] = ray.primID
+                    geomID[i] = ray.geomID
+                    u[i] = ray.u
+                    v[i] = ray.v
+                    tfars[i] = ray.tfar
+                    for j in range(3):
+                        Ng[i, j] = ray.Ng[j]
             else:
                 rtcOccluded(self.scene_i, ray)
-                if not output:
-                    intersect_ids[i] = ray.geomID
-            if output:
-                primID[i] = ray.primID
-                geomID[i] = ray.geomID
-                u[i] = ray.u
-                v[i] = ray.v
-                tfars[i] = ray.tfar
-                for j in range(3):
-                    Ng[i, j] = ray.Ng[j]
+                intersect_ids[i] = ray.geomID
+
         if output:
             return {'u':u, 'v':v, 'Ng': Ng, 'tfar': tfars, 'primID': primID, 'geomID': geomID}
         else:
-            return intersect_ids
+            if query_type == distance:
+                return intersect_dist
+            else:
+                return intersect_ids
 
     def __dealloc__(self):
         rtcDeleteScene(self.scene_i)

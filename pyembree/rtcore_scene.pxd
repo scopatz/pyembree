@@ -67,4 +67,5 @@ cdef class EmbreeScene:
 
 cdef enum rayQueryType:
     intersect,
-    occluded
+    occluded,
+    distance
