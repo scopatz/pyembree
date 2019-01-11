@@ -79,17 +79,16 @@ class TestIntersectionTriangles(TestCase):
 
 
     def test_intersect(self):
-        res = self.scene.run(self.origins, self.dirs, output=1)
+        res = self.scene.run(self.origins, self.dirs, output=1, dists = 100)
 
         self.assertTrue([0, 0, 0, -1], res['geomID'])
-
         ray_inter = res['geomID'] >= 0
         primID = res['primID'][ray_inter]
         u = res['u'][ray_inter]
         v = res['v'][ray_inter]
-        tfar = res['tfar'][ray_inter]
+        tfar = res['tfar']
         self.assertTrue([ 0, 1, 1], primID)
-        self.assertTrue(np.allclose([6.9, 6.9, 6.9], tfar))
+        self.assertTrue(np.allclose([6.9, 6.9, 6.9,100], tfar))
         self.assertTrue(np.allclose([0.4, 0.1, 0.15], u))
         self.assertTrue(np.allclose([0.5, 0.4, 0.35], v))
 

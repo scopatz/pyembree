@@ -2,6 +2,7 @@ cimport cython
 cimport numpy as np
 import numpy as np
 import logging
+import numbers
 cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
@@ -54,6 +55,9 @@ cdef class EmbreeScene:
         if dists is None:
             tfars = np.empty(nv, 'float32')
             tfars.fill(1e37)
+        elif isinstance(dists, numbers.Number):
+            tfars = np.empty(nv, 'float32')
+            tfars.fill(dists)
         else:
             tfars = dists
 
