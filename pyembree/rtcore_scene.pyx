@@ -51,7 +51,7 @@ cdef class EmbreeScene:
         if dists is None:
             tfars = np.empty(nv, 'float32')
             tfars.fill(1e37)
-        elif isinstance(dists,numbers.Number):
+        elif isinstance(dists, numbers.Number):
             tfars = np.empty(nv, 'float32')
             tfars.fill(dists)
         else:
