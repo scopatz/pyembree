@@ -13,8 +13,8 @@ $ACTIVITIES = ['pyembree-examples', 'version_bump', 'changelog',
 
 $VERSION_BUMP_PATTERNS = [
     ('recipes/pyembree/meta.yaml', 'version:.*', 'version: $VERSION'),
-    ('pyembree/__init__.py', '__version__\s*=.*', "__version__ = '$VERSION'"),
-    ('setup.py', 'version\s*=.*', "version='$VERSION',"),
+    ('pyembree/__init__.py', r'__version__\s*=.*', "__version__ = '$VERSION'"),
+    ('setup.py', r'version\s*=.*', "version='$VERSION',"),
     ]
 $CHANGELOG_FILENAME = 'CHANGELOG.rst'
 $CHANGELOG_TEMPLATE = 'TEMPLATE.rst'
