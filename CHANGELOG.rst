@@ -4,6 +4,17 @@ pyembree Change Log
 
 .. current developments
 
+v0.1.5
+====================
+
+**Added:**
+
+* Calling EmbreeScene.run with query = 'DISTANCE' returns an array with the 
+  distance to the nearest hit, or tfar (default of 1e37) if there is no hit.
+* Set tfar to the same value for all points by passing a number to the dists argument in EmbreeScene.run
+
+
+
 v0.1.4
 ====================
 
