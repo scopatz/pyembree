@@ -2,7 +2,7 @@ language: python
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
   - "2.7"
-  - "3.4"
+  - "3.7"
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
@@ -29,7 +29,7 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
 
-  # install cymetric
+  # install pyembree
   - ./.travis-install.sh
 
 script:
