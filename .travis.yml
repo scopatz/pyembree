@@ -24,7 +24,9 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
-  - conda config --set channel_priority strict
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then
+      conda config --set channel_priority strict;
+    fi
   - conda update -q conda
   - conda install conda-build jinja2 setuptools patchelf nose
   # Useful for debugging any issues with conda
