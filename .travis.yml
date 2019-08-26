@@ -2,7 +2,7 @@ language: python
 python:
   # We don't actually use the Travis Python, but this keeps it organized.
   - "2.7"
-  - "3.4"
+  - "3.7"
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
@@ -24,12 +24,15 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then
+      conda config --set channel_priority strict;
+    fi
   - conda update -q conda
-  - conda install conda-build jinja2 setuptools binstar patchelf nose
+  - conda install conda-build jinja2 setuptools patchelf nose
   # Useful for debugging any issues with conda
   - conda info -a
 
-  # install cymetric
+  # install pyembree
   - ./.travis-install.sh
 
 script:
