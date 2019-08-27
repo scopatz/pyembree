@@ -4,6 +4,20 @@ pyembree Change Log
 
 .. current developments
 
+v0.1.6
+====================
+
+**Changed:**
+
+* Multiple ``TriangleMesh`` objects can now be added to a scene, and the scene is committed only as-needed.
+
+**Authors:**
+
+* Anthony Scopatz
+* Matthew Turk
+
+
+
 v0.1.5
 ====================
 
