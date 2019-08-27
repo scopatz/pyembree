@@ -7,7 +7,7 @@ $WEBSITE_URL = 'https://github.com/scopatz/pyembree'
 with! dockeractivity(name='pyembree-examples', lang='sh'):
     python examples/attenuate.py --no-plots
 
-$ACTIVITIES = ['pyembree-examples', 'version_bump', 'changelog',
+$ACTIVITIES = ['authors', 'pyembree-examples', 'version_bump', 'changelog',
                'tag', 'push_tag', 'conda_forge','ghrelease'
                ]
 
