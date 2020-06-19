@@ -13,8 +13,7 @@ except ImportError:
 
 
 ext_modules = cythonize('pyembree/*.pyx', language='c++',
-                        include_path=include_path,
-                        library_path=['/usr/lib'])
+                        include_path=include_path)
 for ext in ext_modules:
     ext.include_dirs = include_path
     ext.libraries = ["embree"]
