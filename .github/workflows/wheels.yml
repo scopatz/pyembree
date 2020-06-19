@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       CIBW_SKIP: pp*
-      CIBW_BEFORE_BUILD: bash {project}/scripts/get_embree.bash
+      CIBW_BEFORE_BUILD: bash {project}/scripts/get_embree.bash; pip install numpy cython
       CIBW_TEST_REQUIRES: pytest
       CIBW_TEST_COMMAND: "pytest {project}/tests"
     strategy:
