@@ -91,6 +91,7 @@ cdef class TriangleMesh:
         self.vertices = vertices
         self.indices = triangles
         self.mesh = mesh
+        self.scene = scene
 
     cdef void _build_from_indices(self, rtcs.EmbreeScene scene,
                                   np.ndarray tri_vertices,
@@ -127,6 +128,11 @@ cdef class TriangleMesh:
         self.vertices = vertices
         self.indices = triangles
         self.mesh = mesh
+
+
+    def __dealloc__(self):
+        rtcg.rtcDeleteGeometry(self.scene.scene_i, mesh)
+
 
 cdef class ElementMesh(TriangleMesh):
     r'''
