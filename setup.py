@@ -2,10 +2,15 @@
 
 from setuptools import setup, find_packages
 
-import numpy as np
 from Cython.Build import cythonize
 
-include_path = [np.get_include(), '/usr/include/embree2']
+include_path = ['/usr/include/embree2']
+try:
+    import numpy as np
+    include_path.append(np.get_include())
+except ImportError:
+    print('no numpy, install may fail!')
+
 
 ext_modules = cythonize('pyembree/*.pyx', language='c++',
                         include_path=include_path,
@@ -19,7 +24,7 @@ setup(
     version='0.1.6',
     ext_modules=ext_modules,
     zip_safe=False,
-    install_requires=['numpy'],
+    install_requires=['numpy', 'cython', 'setuptools'],
     packages=find_packages(),
-    package_data = {'pyembree': ['*.pxd']}
+    package_data={'pyembree': ['*.pxd']}
 )
