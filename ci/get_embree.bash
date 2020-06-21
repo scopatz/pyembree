@@ -8,3 +8,5 @@ rm embree.tar.gz
 cd embree-2.17.7.x86_64.linux
 mv include/embree2 /usr/include
 mv lib/* /usr/lib
+
+rm -rf embree-2.17*
