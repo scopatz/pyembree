@@ -9,7 +9,7 @@ cdef class RayCollisionCallback:
     # CALLBACK_CONTINUE.  CALLBACK_CONTINUE will keep it running, but
     # assumes that you have done something to the ray.  Otherwise it will
     # enter into an endless loop.
-    cdef int callback(self, RTCRay ray)
+    cdef int callback(self, RTCRay &ray)
 
 cdef class RayCollisionNull(RayCollisionCallback):
     pass
