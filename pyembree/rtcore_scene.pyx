@@ -7,7 +7,7 @@ cimport rtcore as rtc
 cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
 from .callback_handler cimport \
-    RayCollisionCallback, RayCollisionNull, CALLBACK_TERMINATE, CALLBACK_CONTINUE
+    RayCollisionCallback, RayCollisionNull, _CALLBACK_TERMINATE, _CALLBACK_CONTINUE
 
 
 log = logging.getLogger('pyembree')
@@ -103,8 +103,8 @@ cdef class EmbreeScene:
             vd_i += vd_step
 
             if query_type == intersect or query_type == distance:
-                do_continue = CALLBACK_CONTINUE
-                while do_continue == CALLBACK_CONTINUE:
+                do_continue = _CALLBACK_CONTINUE
+                while do_continue == _CALLBACK_CONTINUE:
                     rtcIntersect(self.scene_i, ray)
                     do_continue = callback_handler.callback(ray)
                 if not output:
