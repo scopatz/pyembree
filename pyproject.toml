@@ -1,0 +1,7 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "Cython",
+    "setuptools",
+    "numpy",
+]
