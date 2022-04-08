@@ -1,23 +1,43 @@
-#!/usr/bin/env python
-
-from setuptools import setup, find_packages
+from importlib import metadata
 
 import numpy as np
+
+# setuptools must be imported before cython. setuptools overrides the
+# distutils.extension.Extension class. If imported after, the isinstance check in
+# distutils.command.check_extensions_list fails and setuptools gives the erroneous
+# error:
+#
+# "error: each element of 'ext_modules' option must be an Extension instance or 2-tuple"
+#
+# ref: https://github.com/cython/cython/issues/4724
+import setuptools
+from setuptools import find_packages, setup
 from Cython.Build import cythonize
 
-include_path = [np.get_include()]
+include_path = [
+    np.get_include(),
+]
 
-ext_modules = cythonize('pyembree/*.pyx', language='c++',
-                        include_path=include_path)
+ext_modules = cythonize(
+    module_list="pyembree/*.pyx",
+    language_level=3,
+    include_path=include_path,
+)
+
 for ext in ext_modules:
     ext.include_dirs = include_path
-    ext.libraries = ["embree"]
+    ext.libraries = [
+        "pyembree/embree2/lib/embree",
+        "pyembree/embree2/lib/tbb",
+        "pyembree/embree2/lib/tbbmalloc",
+    ]
 
 setup(
     name="pyembree",
-    version='0.1.6',
+    version=metadata.version("pyembree"),
     ext_modules=ext_modules,
     zip_safe=False,
     packages=find_packages(),
-    package_data = {'pyembree': ['*.pxd']}
+    include_package_data=True,
+    package_data={"pyembree": ["*.dll"]},
 )

@@ -1,10 +1,13 @@
+# distutils: language=c++
+
+
 cimport numpy as np
-cimport rtcore as rtc
-cimport rtcore_ray as rtcr
-cimport rtcore_scene as rtcs
-cimport rtcore_geometry as rtcg
-cimport rtcore_geometry_user as rtcgu
-from rtcore cimport Vertex, Triangle, Vec3f
+cimport pyembree.rtcore as rtc
+cimport pyembree.rtcore_ray as rtcr
+cimport pyembree.rtcore_scene as rtcs
+cimport pyembree.rtcore_geometry as rtcg
+cimport pyembree.rtcore_geometry_user as rtcgu
+from pyembree.rtcore cimport Vertex, Triangle, Vec3f
 from libc.stdlib cimport malloc, free
 
 ctypedef Vec3f (*renderPixelFunc)(float x, float y,
