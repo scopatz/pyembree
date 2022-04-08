@@ -1,1 +1,3 @@
-__version__ = '0.1.7'
+from importlib import metadata
+
+__version__ = metadata.version('pyembree')
