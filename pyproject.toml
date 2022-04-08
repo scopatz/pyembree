@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "pyembree"
+version = "0.1.7"
+description = "Python wrapper for embree"
+authors = ["Anthony Scopatz <scopatz@gmail.com>, Adam Hendry <adam.grant.hendry@gmail.com>"]
+license = "BSD 2-Clause \"Simplified\""
+classifiers = [
+    "License :: OSI Approved :: BSD 2-Clause Simplified",
+    "Operating System :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.22.2"
+Cython = "^0.29.28"
+setuptools = "^60.9.3"
+wheel = "^0.37.1"
+trimesh = "^3.10.7"
+Rtree = "^1.0.0"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.12.2"
+pytest = "^7.0.1"
+coverage = "^6.3.2"
+ipython = "^8.1.1"
+
+[build-system]
+requires = [
+    "Cython",
+    "numpy",
+    "setuptools>=45",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"

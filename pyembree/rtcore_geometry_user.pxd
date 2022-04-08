@@ -1,9 +1,11 @@
 # rtcore_geometry_user wrapper
+# distutils: language=c++
+
 
 #from libc.stdint cimport ssize_t, size_t
-from .rtcore_ray cimport RTCRay, RTCRay4, RTCRay8, RTCRay16
-from .rtcore_geometry cimport RTCBounds
-from .rtcore_scene cimport RTCScene
+from pyembree.rtcore_ray cimport RTCRay, RTCRay4, RTCRay8, RTCRay16
+from pyembree.rtcore_geometry cimport RTCBounds
+from pyembree.rtcore_scene cimport RTCScene
 cimport cython
 cimport numpy as np
 

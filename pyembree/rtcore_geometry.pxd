@@ -1,7 +1,9 @@
 # rtcore_geometry wrapper
+# distutils: language=c++
 
-from .rtcore_ray cimport RTCRay, RTCRay4, RTCRay8, RTCRay16
-from .rtcore_scene cimport RTCScene
+
+from pyembree.rtcore_ray cimport RTCRay, RTCRay4, RTCRay8, RTCRay16
+from pyembree.rtcore_scene cimport RTCScene
 cimport cython
 cimport numpy as np
 
@@ -17,13 +19,13 @@ cdef extern from "embree2/rtcore_geometry.h":
         RTC_FACE_BUFFER
         RTC_LEVEL_BUFFER
 
-        RTC_EDGE_CREASE_INDEX_BUFFER 
-        RTC_EDGE_CREASE_WEIGHT_BUFFER 
+        RTC_EDGE_CREASE_INDEX_BUFFER
+        RTC_EDGE_CREASE_WEIGHT_BUFFER
 
-        RTC_VERTEX_CREASE_INDEX_BUFFER 
-        RTC_VERTEX_CREASE_WEIGHT_BUFFER 
+        RTC_VERTEX_CREASE_INDEX_BUFFER
+        RTC_VERTEX_CREASE_WEIGHT_BUFFER
 
-        RTC_HOLE_BUFFER          
+        RTC_HOLE_BUFFER
 
     cdef enum RTCMatrixType:
         RTC_MATRIX_ROW_MAJOR
@@ -52,7 +54,7 @@ cdef extern from "embree2/rtcore_geometry.h":
     unsigned rtcNewInstance(RTCScene target, RTCScene source)
     void rtcSetTransform(RTCScene scene, unsigned geomID,
                          RTCMatrixType layout, const float *xfm)
-    unsigned rtcNewTriangleMesh(RTCScene scene, RTCGeometryFlags flags, 
+    unsigned rtcNewTriangleMesh(RTCScene scene, RTCGeometryFlags flags,
                                 size_t numTriangles, size_t numVertices,
                                 size_t numTimeSteps)
 
@@ -85,4 +87,3 @@ cdef extern from "embree2/rtcore_geometry.h":
     void rtcSetUserData (RTCScene scene, unsigned geomID, void* ptr)
     void* rtcGetUserData (RTCScene scene, unsigned geomID)
     void rtcDeleteGeometry (RTCScene scene, unsigned geomID)
-
