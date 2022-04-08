@@ -1,4 +1,6 @@
 # rtcore.pxd wrapper
+# distutils: language=c++
+
 
 cimport cython
 cimport numpy as np
