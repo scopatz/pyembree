@@ -10,9 +10,8 @@ import numpy as np
 # "error: each element of 'ext_modules' option must be an Extension instance or 2-tuple"
 #
 # ref: https://github.com/cython/cython/issues/4724
-import setuptools
-from setuptools import find_packages, setup
-from Cython.Build import cythonize
+from setuptools import find_packages, setup  # isort: skip
+from Cython.Build import cythonize  # isort: skip
 
 include_path = [
     np.get_include(),
