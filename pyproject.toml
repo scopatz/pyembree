@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyembree"
-version = "0.1.7"
+version = "0.1.8"
 description = "Python wrapper for embree"
 authors = ["Anthony Scopatz <scopatz@gmail.com>, Adam Hendry <adam.grant.hendry@gmail.com>"]
 license = "BSD 2-Clause \"Simplified\""
