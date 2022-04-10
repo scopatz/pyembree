@@ -1,3 +1,1 @@
-include *.h *.pxd *.dll
-recursive-include embree2 *.h *.isph
-recursive-include embree2/lib *.lib
+recursive-include pyembree *.pyd *.so
