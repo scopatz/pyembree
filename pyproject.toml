@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyembree"
-version = "0.1.9"
+version = "0.1.10"
 description = "Python wrapper for Intel Embree 2.17.7"
 authors = [
     "Anthony Scopatz <scopatz@gmail.com>",
