@@ -55,7 +55,7 @@ if os.path.exists(root):
     # dynamic libraries
     for lib in libs:
         shutil.copy(
-            os.path.join(root, "bin", lib + ext),
+            os.path.join(root, "bin", "".join((lib, ext))),
             os.path.join(cwd, "pyembree"),
         )
 
