@@ -17,6 +17,9 @@ classifiers = [
 ]
 readme = "README.rst"
 repository = "https://github.com/adam-grant-hendry/pyembree"
+include = [
+    { path = "build.py" }
+]
 
 [tool.poetry.dependencies]
 python = "3.8"

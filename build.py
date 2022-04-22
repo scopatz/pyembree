@@ -43,10 +43,6 @@ if os.name == "nt":
         os.path.join(cwd, "embree", "bin"),
     ]
 
-# include.extend(
-#     np.get_include(),
-# )
-
 
 def build(setup_kwargs: Dict[str, Any]) -> None:
     ext_modules: List[Extension] = cythonize(

@@ -32,7 +32,7 @@ setup_kwargs = {
     "install_requires": install_requires,
     "python_requires": ">=3.8,<3.9",
 }
-from .build import *
+from build import *
 
 build(setup_kwargs)
 
