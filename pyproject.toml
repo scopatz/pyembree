@@ -18,6 +18,10 @@ classifiers = [
 ]
 readme = "README.rst"
 repository = "https://github.com/adam-grant-hendry/pyembree"
+
+packages = [
+    { include = "pyembree" }
+]
 include = [
     { path = "pyembree/*.pyd", format = "wheel" },
     { path = "pyembree/*.so", format = "wheel" }

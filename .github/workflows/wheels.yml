@@ -1,6 +1,6 @@
 name: Build and Upload to PyPI
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build_wheels:
@@ -53,12 +53,12 @@ jobs:
 
       - name: Build wheels
         run: |
-          python -m cibuildwheel --output-dir wheelhouse
+          python -m cibuildwheel --output-dir .
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: ./wheelhouse
+          path: .
 
       - name: Upload To PyPI
         env:
