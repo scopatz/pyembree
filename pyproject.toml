@@ -39,7 +39,7 @@ isort = "^5.10.1"
 black = "^22.3.0"
 
 [tool.poetry.build]
-generate-setup-file = true
+generate-setup-file = false
 script = "build.py"
 
 [build-system]

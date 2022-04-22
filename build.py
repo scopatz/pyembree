@@ -1,5 +1,4 @@
 import os
-import shutil
 from importlib import metadata
 from typing import Any, Dict, List
 

@@ -9,7 +9,7 @@ from pyembree.rtcore_scene cimport RTCScene
 cimport cython
 cimport numpy as np
 
-cdef extern from "embree2/include/rtcore_geometry_user.h":
+cdef extern from "embree/include/rtcore_geometry_user.h":
     ctypedef void (*RTCBoundsFunc)(void* ptr, size_t item, RTCBounds& bounds_o)
     ctypedef void (*RTCIntersectFunc)(void* ptr, RTCRay& ray, size_t item)
     ctypedef void (*RTCIntersectFunc4)(const void* valid, void* ptr,
