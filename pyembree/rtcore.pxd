@@ -6,7 +6,7 @@ cimport cython
 cimport numpy as np
 
 
-cdef extern from "embree2/rtcore.h":
+cdef extern from "embree2/include/rtcore.h":
     cdef int RTCORE_VERSION_MAJOR
     cdef int RTCORE_VERSION_MINOR
     cdef int RTCORE_VERSION_PATCH
