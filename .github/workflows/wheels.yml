@@ -15,10 +15,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      CIBW_SKIP: pp* *-win32 *musllinux*
+      CIBW_SKIP: pp* cp36* cp37* cp310* *-win32 *musllinux*
       CIBW_ARCHS: auto64
       CIBW_BEFORE_BUILD_LINUX: |
-        apt install -y cmake wget
+        yum install -y cmake wget
         bash {project}/ci/embree_linux.bash
       CIBW_BEFORE_BUILD_MACOS: |
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
