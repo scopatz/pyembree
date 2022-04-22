@@ -5,18 +5,38 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build_wheels:
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [ '3.8', '3.9' ]
-
     name: Build wheels on ${{ matrix.os }}
-
     runs-on: ${{ matrix.os }}
+    strategy:
+    # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        include:
+          # Windows
+          - os: windows-latest
+            python: 38
+            bitness: 64
+            platform_id: win_amd64
+
+          # Ubuntu
+          - os: ubuntu-latest
+            python: 38
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # MacOS
+          - os: macos-latest
+            bitness: 64
+            python: 38
+            platform_id: macosx_x86_64
 
     env:
-      CIBW_SKIP: pp* cp36* cp37* cp310* *-win32 *musllinux*
+      CIBW_SKIP: pp* cp36* cp37* cp39* cp310* *-win32 *musllinux*
       CIBW_ARCHS: auto64
+      CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+      CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+      CIBW_BUILD_VERBOSITY: 1
       CIBW_BEFORE_BUILD_LINUX: |
         yum install -y cmake wget
         bash {project}/ci/embree_linux.bash
@@ -58,7 +78,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: .
+          path: ./*.whl
 
       - name: Upload To PyPI
         env:
