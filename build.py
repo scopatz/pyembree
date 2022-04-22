@@ -18,64 +18,49 @@ from setuptools.command.build_ext import build_ext  # isort: skip
 from setuptools.extension import Extension  # isort: skip
 from Cython.Build import cythonize  # isort: skip
 
-includes: List[str] = [
-    np.get_include(),
-]
+cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
-libs: List[str] = [
-    "embree",
-    "tbb",
-    "tbbmalloc",
+include = [
+    "/opt/local/include",
+    os.path.expanduser("~/pyembree/embree2/include"),
+]
+library = [
+    "/opt/local/lib",
+    os.path.expanduser("~/pyembree/embree2/lib"),
+    os.path.expanduser("~/pyembree/embree2/bin"),
 ]
 
 if os.name == "nt":
-    root = "C:/Program Files/Intel/Embree v2.17.7 x64"
-    cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
-    ext = ".dll"
-else:
-    root = "/opt/local"
-    cwd = os.path.expanduser("~")
-    ext = ".so"
+    include = [
+        "C:/Program Files/Intel/Embree v2.17.7 x64/include",
+        os.path.join(cwd, "pyembree", "embree2"),
+    ]
+    library = [
+        "C:/Program Files/Intel/Embree v2.17.7 x64/lib",
+        os.path.join(cwd, "pyembree", "embree2", "lib"),
+        os.path.join(cwd, "pyembree", "embree2", "bin"),
+    ]
 
-if os.path.exists(root):
-    # header files
-    shutil.copytree(
-        os.path.join(root, "include/embree2"),
-        os.path.join(cwd, "pyembree/embree2"),
-        dirs_exist_ok=True,
-    )
-
-    # static libraries
-    shutil.copytree(
-        os.path.join(root, "lib"),
-        os.path.join(cwd, "pyembree/embree2/lib"),
-        dirs_exist_ok=True,
-    )
-
-    # dynamic libraries
-    for lib in libs:
-        shutil.copy(
-            os.path.join(root, "bin", "".join((lib, ext))),
-            os.path.join(cwd, "pyembree"),
-        )
-
-
-includes.extend(os.path.join(cwd, "pyembree/embree2"))
-
-static_libdirs: List[str] = [os.path.join(cwd, "pyembree/embree2/lib")]
+include.extend(
+    np.get_include(),
+)
 
 
 def build(setup_kwargs: Dict[str, Any]) -> None:
     ext_modules: List[Extension] = cythonize(
         module_list="pyembree/*.pyx",
         language_level=3,
-        include_path=includes,
+        include_path=include,
     )
 
     for ext in ext_modules:
-        ext.include_dirs = includes
-        ext.libraries = libs
-        ext.library_dirs = static_libdirs
+        ext.include_dirs = include
+        ext.library_dirs = library
+        ext.libraries = [
+            "embree",
+            "tbb",
+            "tbbmalloc",
+        ]
 
     setup_kwargs.update(
         {
