@@ -73,12 +73,12 @@ jobs:
 
       - name: Build wheels
         run: |
-          python -m cibuildwheel --output-dir wheelhouse
+          python -m cibuildwheel --output-dir .
 
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: wheelhouse/*.whl
+          path: ./*.whl
 
       - name: Upload To PyPI
         env:
@@ -86,4 +86,4 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           pip install twine
-          twine upload ./wheelhouse/*
+          twine upload ./*
