@@ -18,35 +18,28 @@ from setuptools.extension import Extension  # isort: skip
 from Cython.Build import cythonize  # isort: skip
 
 package_name = "pyembree"
-cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+cwd = os.path.dirname(__file__)
 version_file = os.path.join(cwd, package_name, "_version.py")
 
 with open(version_file, mode="r") as fd:
     exec(fd.read())
 
+if os.name == "nt":
+    root = "C:/Program Files/Intel/Embree v2.17.7 x64/include"
+else:
+    root = "/opt/local"
+
 include = [
     np.get_include(),
-    "/opt/local/include",
-    os.path.expanduser("~/embree/include"),
+    os.path.join(root, "include"),
+    os.path.join(cwd, package_name, "embree", "include"),
 ]
 library = [
-    "/opt/local/lib",
-    os.path.expanduser("~/embree/lib"),
-    os.path.expanduser("~/embree/bin"),
+    os.path.join(root, "lib"),
+    os.path.join(root, "bin"),
+    os.path.join(cwd, package_name, "embree", "lib"),
+    os.path.join(cwd, package_name, "embree", "bin"),
 ]
-
-if os.name == "nt":
-    include = [
-        np.get_include(),
-        "C:/Program Files/Intel/Embree v2.17.7 x64/include",
-        os.path.join(cwd, "embree", "include"),
-    ]
-    library = [
-        "C:/Program Files/Intel/Embree v2.17.7 x64/lib",
-        "C:/Program Files/Intel/Embree v2.17.7 x64/bin",
-        os.path.join(cwd, "embree", "lib"),
-        os.path.join(cwd, "embree", "bin"),
-    ]
 
 ext_modules: List[Extension] = cythonize(
     module_list="pyembree/*.pyx",
