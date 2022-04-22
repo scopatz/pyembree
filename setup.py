@@ -18,16 +18,18 @@ from setuptools.extension import Extension  # isort: skip
 from Cython.Build import cythonize  # isort: skip
 
 package_name = "pyembree"
-cwd = os.path.dirname(__file__)
+
+if os.name == "nt":
+    cwd = os.path.dirname(__file__)
+    root = "C:/Program Files/Intel/Embree v2.17.7 x64/include"
+else:
+    cwd = os.path.expanduser("~")
+    root = "/opt/local"
+
 version_file = os.path.join(cwd, package_name, "_version.py")
 
 with open(version_file, mode="r") as fd:
     exec(fd.read())
-
-if os.name == "nt":
-    root = "C:/Program Files/Intel/Embree v2.17.7 x64/include"
-else:
-    root = "/opt/local"
 
 include = [
     np.get_include(),
@@ -84,6 +86,7 @@ setup_kwargs = {
     "version": __version__,
     "description": "Python wrapper for Intel Embree 2.17.7",
     "long_description": readme,
+    "long_description_content_type": "text/x-rst",
     "author": "Anthony Scopatz",
     "author_email": "scopatz@gmail.com",
     "maintainer": "Adam Hendry",
