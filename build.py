@@ -21,6 +21,7 @@ from Cython.Build import cythonize  # isort: skip
 cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 include = [
+    np.get_include(),
     "/opt/local/include",
     os.path.expanduser("~/embree/include"),
 ]
@@ -32,6 +33,7 @@ library = [
 
 if os.name == "nt":
     include = [
+        np.get_include(),
         "C:/Program Files/Intel/Embree v2.17.7 x64/include",
         os.path.join(cwd, "embree"),
     ]
@@ -41,9 +43,9 @@ if os.name == "nt":
         os.path.join(cwd, "embree", "bin"),
     ]
 
-include.extend(
-    np.get_include(),
-)
+# include.extend(
+#     np.get_include(),
+# )
 
 
 def build(setup_kwargs: Dict[str, Any]) -> None:
