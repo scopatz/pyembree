@@ -82,7 +82,7 @@ install_requires = [
 
 setup_kwargs = {
     "name": "pyembree",
-    "version": metadata.version("pyembree"),
+    "version": "0.2.0",
     "description": "Python wrapper for Intel Embree 2.17.7",
     "long_description": readme,
     "author": "Anthony Scopatz",
