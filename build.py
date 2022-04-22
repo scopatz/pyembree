@@ -22,23 +22,23 @@ cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 include = [
     "/opt/local/include",
-    os.path.expanduser("~/pyembree/embree2/include"),
+    os.path.expanduser("~/embree/include"),
 ]
 library = [
     "/opt/local/lib",
-    os.path.expanduser("~/pyembree/embree2/lib"),
-    os.path.expanduser("~/pyembree/embree2/bin"),
+    os.path.expanduser("~/embree/lib"),
+    os.path.expanduser("~/embree/bin"),
 ]
 
 if os.name == "nt":
     include = [
         "C:/Program Files/Intel/Embree v2.17.7 x64/include",
-        os.path.join(cwd, "pyembree", "embree2"),
+        os.path.join(cwd, "embree"),
     ]
     library = [
         "C:/Program Files/Intel/Embree v2.17.7 x64/lib",
-        os.path.join(cwd, "pyembree", "embree2", "lib"),
-        os.path.join(cwd, "pyembree", "embree2", "bin"),
+        os.path.join(cwd, "embree", "lib"),
+        os.path.join(cwd, "embree", "bin"),
     ]
 
 include.extend(
