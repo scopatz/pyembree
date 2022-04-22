@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyembree"
-version = "0.1.11"
+version = "0.1.12"
 description = "Python wrapper for Intel Embree 2.17.7"
 authors = [
     "Anthony Scopatz <scopatz@gmail.com>",
@@ -36,15 +36,6 @@ ipython = "^8.1.1"
 isort = "^5.10.1"
 black = "^22.3.0"
 
-[tool.poetry.build]
-generate-setup-file = false
-script = "build.py"
-
 [build-system]
-requires = [
-    "Cython",
-    "numpy",
-    "setuptools>=45",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.1.0a6"]
+build-backend = "poetry.core.masonry.api"
