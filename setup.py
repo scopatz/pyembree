@@ -17,7 +17,12 @@ from setuptools.command.build_ext import build_ext  # isort: skip
 from setuptools.extension import Extension  # isort: skip
 from Cython.Build import cythonize  # isort: skip
 
+package_name = "pyembree"
 cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+version_file = os.path.join(cwd, package_name, "_version.py")
+
+with open(version_file, mode="r") as fd:
+    exec(fd.read())
 
 include = [
     np.get_include(),
@@ -38,6 +43,7 @@ if os.name == "nt":
     ]
     library = [
         "C:/Program Files/Intel/Embree v2.17.7 x64/lib",
+        "C:/Program Files/Intel/Embree v2.17.7 x64/bin",
         os.path.join(cwd, "embree", "lib"),
         os.path.join(cwd, "embree", "bin"),
     ]
@@ -82,7 +88,7 @@ install_requires = [
 
 setup_kwargs = {
     "name": "pyembree",
-    "version": "0.2.0",
+    "version": __version__,
     "description": "Python wrapper for Intel Embree 2.17.7",
     "long_description": readme,
     "author": "Anthony Scopatz",
@@ -98,6 +104,14 @@ setup_kwargs = {
     "package_data": package_data,
     "install_requires": install_requires,
     "python_requires": ">=3.8,<3.9",
+    "classifiers": [
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows :: Windows 10",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+    ],
 }
 
 setup(**setup_kwargs)
