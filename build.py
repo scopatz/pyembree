@@ -1,5 +1,4 @@
 import os
-from importlib import metadata
 from typing import Any, Dict, List
 
 import numpy as np
@@ -17,30 +16,43 @@ from setuptools.command.build_ext import build_ext  # isort: skip
 from setuptools.extension import Extension  # isort: skip
 from Cython.Build import cythonize  # isort: skip
 
-cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+cwd = os.path.dirname(__file__)
+package_dir = os.path.join(cwd, "pyembree")
+dependencies_dir = os.path.join(cwd, "embree")
+
+version_file = os.path.join(package_dir, "_version.py")
+
+with open(version_file, mode="r") as fd:
+    exec(fd.read())
 
 include = [
     np.get_include(),
-    "/opt/local/include",
-    os.path.expanduser("~/embree/include"),
+    os.path.join(dependencies_dir, "include", "embree2"),
 ]
 library = [
-    "/opt/local/lib",
-    os.path.expanduser("~/embree/lib"),
-    os.path.expanduser("~/embree/bin"),
+    os.path.join(dependencies_dir, "lib"),
+    os.path.join(dependencies_dir, "bin"),
 ]
 
-if os.name == "nt":
-    include = [
-        np.get_include(),
-        "C:/Program Files/Intel/Embree v2.17.7 x64/include",
-        os.path.join(cwd, "embree"),
+ext_modules: List[Extension] = cythonize(
+    module_list="pyembree/*.pyx",
+    language_level=3,
+    include_path=include,
+)
+
+for ext in ext_modules:
+    ext.include_dirs = include
+    ext.library_dirs = library
+    ext.libraries = [
+        "embree",
+        "tbb",
+        "tbbmalloc",
     ]
-    library = [
-        "C:/Program Files/Intel/Embree v2.17.7 x64/lib",
-        os.path.join(cwd, "embree", "lib"),
-        os.path.join(cwd, "embree", "bin"),
-    ]
+
+packages = ["pyembree"]
+
+with open("README.rst") as file_:
+    readme = file_.read()
 
 
 def build(setup_kwargs: Dict[str, Any]) -> None:
@@ -62,7 +74,7 @@ def build(setup_kwargs: Dict[str, Any]) -> None:
     setup_kwargs.update(
         {
             "name": "pyembree",
-            "version": metadata.version("pyembree"),
+            "version": __version__,
             "ext_modules": ext_modules,
             "cmdclass": {"build_ext": build_ext},
             "zip_safe": False,

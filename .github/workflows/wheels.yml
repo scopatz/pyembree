@@ -31,34 +31,6 @@ jobs:
             python: 38
             platform_id: macosx_x86_64
 
-    env:
-      CIBW_SKIP: pp* cp36* cp37* cp39* cp310* *-win32 *musllinux*
-      CIBW_ARCHS: auto64
-      CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
-      CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
-      CIBW_BUILD_VERBOSITY: 1
-      CIBW_BEFORE_BUILD_LINUX: |
-        yum install -y cmake wget
-        bash {project}/ci/embree_linux.bash
-      CIBW_BEFORE_BUILD_MACOS: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-        brew install wget bash cmake
-        bash {project}/ci/embree_macos.bash
-      CIBW_BEFORE_BUILD_WINDOWS: |
-        pip install delvewheel
-        {project}\\ci\\embree_windows.bat
-      CIBW_REPAIR_WHEEL_COMMAND_LINUX: |
-        LD_LIBRARY_PATH=~/embree/lib:$LD_LIBRARY_PATH
-        auditwheel repair -w {dest_dir} {wheel}
-      CIBW_REPAIR_WHEEL_COMMAND_MACOS: |
-        LD_LIBRARY_PATH=~/embree/lib:$LD_LIBRARY_PATH
-        delocate-listdeps {wheel} && delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}
-      CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
-        delvewheel repair
-        --add-path .\\pyembree\\embree\\bin
-        --no-mangle tbb.dll;tbbmalloc.dll;embree.dll
-        -w {dest_dir} {wheel}
-
     steps:
       - uses: actions/checkout@v3
 
@@ -72,13 +44,41 @@ jobs:
           python -m pip install cibuildwheel
 
       - name: Build wheels
-        run: |
-          python -m cibuildwheel --output-dir wheelhouse
+        uses: pypa/cibuildwheel@v2.4.0
+        with:
+          package-dir: ${{ matrix.package-dir }}
+        env:
+          CIBW_SKIP: pp* cp36* cp37* cp39* cp310* *-win32 *musllinux*
+          CIBW_ARCHS: auto64
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_BUILD_VERBOSITY: 1
+          CIBW_BEFORE_BUILD_LINUX: |
+            yum install -y cmake wget
+            bash {project}/ci/embree_linux.bash
+          CIBW_BEFORE_BUILD_MACOS: |
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+            brew install wget bash cmake
+            bash {project}/ci/embree_macos.bash
+          CIBW_BEFORE_BUILD_WINDOWS: |
+            pip install delvewheel
+            .\\ci\\embree_windows.bat
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: |
+            LD_LIBRARY_PATH=/root/embree/lib:$LD_LIBRARY_PATH
+            auditwheel repair -w {dest_dir} {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: |
+            LD_LIBRARY_PATH=/root/embree/lib:$LD_LIBRARY_PATH
+            delocate-listdeps {wheel} && delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
+            delvewheel repair
+            --add-path .\\embree\\bin
+            --no-mangle tbb.dll;tbbmalloc.dll;embree.dll
+            -w {dest_dir} {wheel}
 
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: wheelhouse/*.whl
+          path: ./wheelhouse
 
       # - name: Upload To PyPI
       #   env:

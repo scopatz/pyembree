@@ -1,6 +1,5 @@
 import os
-from importlib import metadata
-from typing import Any, Dict, List
+from typing import List
 
 import numpy as np
 
@@ -17,30 +16,22 @@ from setuptools.command.build_ext import build_ext  # isort: skip
 from setuptools.extension import Extension  # isort: skip
 from Cython.Build import cythonize  # isort: skip
 
-package_name = "pyembree"
+cwd = os.path.dirname(__file__)
+package_dir = os.path.join(cwd, "pyembree")
+dependencies_dir = os.path.join(cwd, "embree")
 
-if os.name == "nt":
-    cwd = os.path.dirname(__file__)
-    root = "C:/Program Files/Intel/Embree v2.17.7 x64/include"
-else:
-    cwd = os.path.expanduser("~")
-    root = "/opt/local"
-
-version_file = os.path.join(cwd, package_name, "_version.py")
+version_file = os.path.join(package_dir, "_version.py")
 
 with open(version_file, mode="r") as fd:
     exec(fd.read())
 
 include = [
     np.get_include(),
-    os.path.join(root, "include"),
-    os.path.join(cwd, package_name, "embree", "include"),
+    os.path.join(dependencies_dir, "include", "embree2"),
 ]
 library = [
-    os.path.join(root, "lib"),
-    os.path.join(root, "bin"),
-    os.path.join(cwd, package_name, "embree", "lib"),
-    os.path.join(cwd, package_name, "embree", "bin"),
+    os.path.join(dependencies_dir, "lib"),
+    os.path.join(dependencies_dir, "bin"),
 ]
 
 ext_modules: List[Extension] = cythonize(
@@ -59,15 +50,6 @@ for ext in ext_modules:
     ]
 
 packages = ["pyembree"]
-
-package_data = {
-    "": ["*"],
-    "pyembree": [
-        "embree/bin/*",
-        "embree/include/*",
-        "embree/lib/*",
-    ],
-}
 
 with open("README.rst") as file_:
     readme = file_.read()
@@ -97,7 +79,7 @@ setup_kwargs = {
     "zip_safe": False,
     "packages": find_packages(),
     "packages": packages,
-    "package_data": package_data,
+    # "package_data": package_data,
     "install_requires": install_requires,
     "python_requires": ">=3.8,<3.9",
     "classifiers": [
