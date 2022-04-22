@@ -43,7 +43,7 @@ cdef extern from "embree/include/rtcore.h":
     ctypedef bint RTCMemoryMonitorFunc(const ssize_t _bytes, const bint post)
     void rtcSetMemoryMonitorFunction(RTCMemoryMonitorFunc func)
 
-cdef extern from "embree2/rtcore_ray.h":
+cdef extern from "embree/include/rtcore_ray.h":
     pass
 
 cdef struct Vertex:

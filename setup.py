@@ -34,7 +34,7 @@ if os.name == "nt":
     include = [
         np.get_include(),
         "C:/Program Files/Intel/Embree v2.17.7 x64/include",
-        os.path.join(cwd, "embree"),
+        os.path.join(cwd, "embree", "include"),
     ]
     library = [
         "C:/Program Files/Intel/Embree v2.17.7 x64/lib",
