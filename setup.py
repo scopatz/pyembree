@@ -18,7 +18,7 @@ from Cython.Build import cythonize  # isort: skip
 
 cwd = os.path.dirname(__file__)
 package_dir = os.path.join(cwd, "pyembree")
-dependencies_dir = os.path.join(cwd, "embree")
+dependencies_dir = os.path.join(package_dir, "embree")
 
 version_file = os.path.join(package_dir, "_version.py")
 
@@ -43,11 +43,24 @@ ext_modules: List[Extension] = cythonize(
 for ext in ext_modules:
     ext.include_dirs = include
     ext.library_dirs = library
-    ext.libraries = [
-        "embree",
-        "tbb",
-        "tbbmalloc",
-    ]
+    if os.name == "nt":
+        ext.libraries = [
+            "embree",
+            "tbb",
+            "tbbmalloc",
+        ]
+    else:
+        # It is recommended to build against tbb and tbbmalloc, which may improve
+        # the library's runtime performance. However, to be a 'manylinux' wheel, these
+        # must be removed for maximum portability.
+        #
+        # See also `ci/embree_linux.bash`
+        #
+        ext.libraries = [
+            "embree",
+            # "tbb",  # Uncomment to build against tbb
+            # "tbbmalloc"  # Uncomment to build against tbb
+        ]
 
 packages = ["pyembree"]
 

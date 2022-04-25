@@ -8,7 +8,7 @@ jobs:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
-    # Ensure that a wheel builder finishes even if another fails
+      # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
         include:
@@ -32,16 +32,16 @@ jobs:
             platform_id: macosx_x86_64
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Install Python
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install cibuildwheel
-        run: |
-          python -m pip install cibuildwheel
+      - name: Install `cibuildwheel`
+        run: python -m pip install cibuildwheel
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.4.0
@@ -54,31 +54,28 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BUILD_VERBOSITY: 1
           CIBW_BEFORE_BUILD_LINUX: |
-            yum install -y cmake wget
+            yum install -y wget
             bash {project}/ci/embree_linux.bash
           CIBW_BEFORE_BUILD_MACOS: |
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-            brew install wget bash cmake
+            brew install bash
             bash {project}/ci/embree_macos.bash
           CIBW_BEFORE_BUILD_WINDOWS: |
-            pip install delvewheel
-            .\\ci\\embree_windows.bat
+            cmd.exe /c "{project}\\ci\\embree_windows.bat" & pip install delvewheel
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: |
-            LD_LIBRARY_PATH=/root/embree/lib:$LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH="/project/pyembree/embree/lib"
             auditwheel repair -w {dest_dir} {wheel}
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: |
-            LD_LIBRARY_PATH=/root/embree/lib:$LD_LIBRARY_PATH
-            delocate-listdeps {wheel} && delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
-            delvewheel repair
-            --add-path .\\embree\\bin
-            --no-mangle tbb.dll;tbbmalloc.dll;embree.dll
-            -w {dest_dir} {wheel}
+            export DYLD_FALLBACK_LIBRARY_PATH="${GITHUB_WORKSPACE}/pyembree/embree/lib"
+            delocate-listdeps {wheel}
+            delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: |
+            delvewheel repair --add-path %GITHUB_WORKSPACE%\\pyembree\\embree\\bin --no-mangle tbb.dll;tbbmalloc.dll;embree.dll -w {dest_dir} {wheel}
 
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: ./wheelhouse
+          path: ./wheelhouse/*
 
       # - name: Upload To PyPI
       #   env:
