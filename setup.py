@@ -64,7 +64,7 @@ for ext in ext_modules:
 
 packages = ["pyembree"]
 
-with open("README.rst") as file_:
+with open("README.rst", mode="r", encoding="utf-8") as file_:
     readme = file_.read()
 
 install_requires = [
@@ -92,7 +92,6 @@ setup_kwargs = {
     "zip_safe": False,
     "packages": find_packages(),
     "packages": packages,
-    # "package_data": package_data,
     "install_requires": install_requires,
     "python_requires": ">=3.8,<3.9",
     "classifiers": [

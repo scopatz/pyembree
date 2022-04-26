@@ -18,7 +18,7 @@ from Cython.Build import cythonize  # isort: skip
 
 cwd = os.path.dirname(__file__)
 package_dir = os.path.join(cwd, "pyembree")
-dependencies_dir = os.path.join(cwd, "embree")
+dependencies_dir = os.path.join(package_dir, "embree")
 
 version_file = os.path.join(package_dir, "_version.py")
 
@@ -34,24 +34,9 @@ library = [
     os.path.join(dependencies_dir, "bin"),
 ]
 
-ext_modules: List[Extension] = cythonize(
-    module_list="pyembree/*.pyx",
-    language_level=3,
-    include_path=include,
-)
-
-for ext in ext_modules:
-    ext.include_dirs = include
-    ext.library_dirs = library
-    ext.libraries = [
-        "embree",
-        "tbb",
-        "tbbmalloc",
-    ]
-
 packages = ["pyembree"]
 
-with open("README.rst") as file_:
+with open("README.rst", encoding="utf-8") as file_:
     readme = file_.read()
 
 
@@ -65,19 +50,50 @@ def build(setup_kwargs: Dict[str, Any]) -> None:
     for ext in ext_modules:
         ext.include_dirs = include
         ext.library_dirs = library
-        ext.libraries = [
-            "embree",
-            "tbb",
-            "tbbmalloc",
-        ]
+        if os.name == "nt":
+            ext.libraries = [
+                "embree",
+                "tbb",
+                "tbbmalloc",
+            ]
+        else:
+            # It is recommended to build against tbb and tbbmalloc, which may improve
+            # the library's runtime performance. However, to be a 'manylinux' wheel, these
+            # must be removed for maximum portability.
+            #
+            # See also `ci/embree_linux.bash`
+            #
+            ext.libraries = [
+                "embree",
+                # "tbb",  # Uncomment to build against tbb
+                # "tbbmalloc"  # Uncomment to build against tbb
+            ]
 
     setup_kwargs.update(
         {
             "name": "pyembree",
             "version": __version__,
+            "description": "Python wrapper for Intel Embree 2.17.7",
+            "long_description": readme,
+            "long_description_content_type": "text/x-rst",
+            "author": "Anthony Scopatz",
+            "author_email": "scopatz@gmail.com",
+            "maintainer": "Adam Hendry",
+            "maintainer_email": "adam.grant.hendry@gmail.com",
+            "url": "https://github.com/adam-grant-hendry/pyembree",
             "ext_modules": ext_modules,
             "cmdclass": {"build_ext": build_ext},
             "zip_safe": False,
             "packages": find_packages(),
+            "packages": packages,
+            "python_requires": ">=3.8,<3.9",
+            "classifiers": [
+                "License :: OSI Approved :: BSD License",
+                "Operating System :: POSIX :: Linux",
+                "Operating System :: MacOS :: MacOS X",
+                "Operating System :: Microsoft :: Windows :: Windows 10",
+                "Programming Language :: Python :: 3",
+                "Programming Language :: Python :: 3.8",
+            ],
         }
     )
