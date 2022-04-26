@@ -40,6 +40,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Add Python Scripts Directory to Path (MacOS)
+        if: matrix.os == "macos-latest"
+        run: |
+          echo "${PYTHONPATH}"
+          which python3
+          which python3 | ls -al
+          export PATH=$PATH:/usr/local/bin/python
+
       - name: Install `cibuildwheel` (Windows)
         if: matrix.os == 'windows-latest'
         run: python -m pip install cibuildwheel
