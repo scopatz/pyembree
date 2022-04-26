@@ -27,8 +27,8 @@ jobs:
 
           # MacOS
           - os: macos-latest
-            bitness: 64
             python: 38
+            bitness: 64
             platform_id: macosx_x86_64
 
     steps:
@@ -40,8 +40,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install `cibuildwheel`
+      - name: Install `cibuildwheel` (Windows)
+        if: matrix.os == 'windows-latest'
         run: python -m pip install cibuildwheel
+
+      - name: Install `cibuildwheel` (Linux/MacOS)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        run: python3 -m pip install cibuildwheel
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.4.0
@@ -61,7 +66,7 @@ jobs:
             brew install bash
             bash {project}/ci/embree_macos.bash
           CIBW_BEFORE_BUILD_WINDOWS: |
-            cmd.exe /c "{project}\\ci\\embree_windows.bat" & pip install delvewheel
+            cmd.exe /c "{project}\\ci\\embree_windows.bat" & python -m pip install delvewheel
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: |
             export LD_LIBRARY_PATH="/project/pyembree/embree/lib"
             auditwheel repair -w {dest_dir} {wheel}
@@ -69,19 +74,37 @@ jobs:
             export DYLD_FALLBACK_LIBRARY_PATH="${GITHUB_WORKSPACE}/pyembree/embree/lib"
             delocate-listdeps {wheel}
             delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: |
-            delvewheel repair --add-path %GITHUB_WORKSPACE%\\pyembree\\embree\\bin --no-mangle tbb.dll;tbbmalloc.dll;embree.dll -w {dest_dir} {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
+            delvewheel repair
+            --add-path %GITHUB_WORKSPACE%\\pyembree\\embree\\bin
+            --no-mangle tbb.dll;tbbmalloc.dll;embree.dll
+            -w {dest_dir} {wheel}
 
       - uses: actions/upload-artifact@v2
         with:
           name: wheels
           path: ./wheelhouse/*
 
-      - name: Upload To PyPI
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      - name: Upload To PyPI (Windows)
+        if: |
+          matrix.os == 'windows-latest' &&
+          github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags')
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           python -m pip install twine
+          twine upload ./wheelhouse/*
+
+      - name: Upload To PyPI (Linux/MacOS)
+        if: |
+          ( matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' ) &&
+          github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags')
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          python3 -m pip install twine
           twine upload ./wheelhouse/*
