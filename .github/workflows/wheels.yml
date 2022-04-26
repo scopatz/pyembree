@@ -41,7 +41,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Add Python Scripts Directory to Path (MacOS)
-        if: matrix.os == "macos-latest"
+        if: matrix.os == 'macos-latest'
         run: |
           echo "${PYTHONPATH}"
           which python3
