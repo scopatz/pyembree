@@ -43,10 +43,7 @@ jobs:
       - name: Add Python Scripts Directory to Path (MacOS)
         if: matrix.os == 'macos-latest'
         run: |
-          echo "${PYTHONPATH}"
-          which python3
-          which python3 | ls -al
-          export PATH=$PATH:/usr/local/bin/python
+          which python3 && which python3 | ls -l && export PATH=$PATH:/usr/local/bin/python3
 
       - name: Install `cibuildwheel` (Windows)
         if: matrix.os == 'windows-latest'
