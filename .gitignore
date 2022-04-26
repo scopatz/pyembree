@@ -21,3 +21,6 @@ rever/
 
 # Shared libs
 *.pyd
+
+# Embree folder
+pyembree/embree/

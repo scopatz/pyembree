@@ -1,12 +1,11 @@
 [tool.poetry]
 name = "pyembree"
-version = "0.2.3"
+version = "0.2.4"
 description = "Python wrapper for Intel Embree 2.17.7"
 authors = [
     "Anthony Scopatz <scopatz@gmail.com>",
     "Adam Hendry <adam.grant.hendry@gmail.com>"
 ]
-license = "BSD 2-Clause \"Simplified\""
 classifiers = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: POSIX :: Linux",
