@@ -1,0 +1,115 @@
+name: Build and Upload to PyPI
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build_wheels:
+
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        include:
+          # Windows
+          - os: windows-latest
+            python: 38
+            bitness: 64
+            platform_id: win_amd64
+
+          # Ubuntu
+          - os: ubuntu-latest
+            python: 38
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # MacOS
+          - os: macos-latest
+            python: 38
+            bitness: 64
+            platform_id: macosx_x86_64
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Add Python Scripts Directory to Path (MacOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          echo "/Library/Frameworks/Python.framework/Versions/3.8/bin" >> $GITHUB_PATH
+
+      - name: Install `cibuildwheel` (Windows)
+        if: matrix.os == 'windows-latest'
+        run: python -m pip install cibuildwheel
+
+      - name: Install `cibuildwheel` (Linux/MacOS)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+        run: python3 -m pip install cibuildwheel
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.4.0
+        with:
+          package-dir: ${{ matrix.package-dir }}
+        env:
+          CIBW_SKIP: pp* cp36* cp37* cp39* cp310* *-win32 *musllinux*
+          CIBW_ARCHS: auto64
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_BUILD_VERBOSITY: 1
+          CIBW_BEFORE_BUILD_LINUX: |
+            yum install -y wget
+            bash {project}/ci/embree_linux.bash
+          CIBW_BEFORE_BUILD_MACOS: |
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+            brew install bash
+            bash {project}/ci/embree_macos.bash
+          CIBW_BEFORE_BUILD_WINDOWS: |
+            cmd.exe /c "{project}\\ci\\embree_windows.bat" & python -m pip install delvewheel
+          CIBW_REPAIR_WHEEL_COMMAND_LINUX: |
+            export LD_LIBRARY_PATH="/project/pyembree/embree/lib"
+            auditwheel repair -w {dest_dir} {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: |
+            export DYLD_FALLBACK_LIBRARY_PATH="${GITHUB_WORKSPACE}/pyembree/embree/lib"
+            delocate-listdeps {wheel}
+            delocate-wheel --require-archs {delocate_archs} -w {dest_dir} {wheel}
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
+            delvewheel repair
+            --add-path %GITHUB_WORKSPACE%\\pyembree\\embree\\bin
+            --no-mangle tbb.dll;tbbmalloc.dll;embree.dll
+            -w {dest_dir} {wheel}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: ./wheelhouse/*
+
+      - name: Upload To PyPI (Windows)
+        if: |
+          matrix.os == 'windows-latest' &&
+          github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags')
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          python -m pip install twine
+          twine upload ./wheelhouse/*
+
+      - name: Upload To PyPI (Linux/MacOS)
+        if: |
+          ( matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' ) &&
+          github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags')
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          python3 -m pip install twine
+          twine upload ./wheelhouse/*

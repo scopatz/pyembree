@@ -1,3 +1,6 @@
+# distutils: language=c++
+
+
 import logging
 
 

@@ -1,11 +1,13 @@
 # rtcore_scene.pxd wrapper
+# distutils: language=c++
+
 
 cimport cython
 cimport numpy as np
-cimport rtcore as rtc
-cimport rtcore_ray as rtcr
+cimport pyembree.rtcore as rtc
+cimport pyembree.rtcore_ray as rtcr
 
-cdef extern from "embree2/rtcore_scene.h":
+cdef extern from "embree/include/embree2/rtcore_scene.h":
 
     ctypedef struct RTCRay
     ctypedef struct RTCRay4

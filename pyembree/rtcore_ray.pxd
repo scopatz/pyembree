@@ -1,9 +1,11 @@
 # rtcore_ray.pxd wrapper
+# distutils: language=c++
+
 
 cimport cython
 cimport numpy as np
 
-cdef extern from "embree2/rtcore_ray.h":
+cdef extern from "embree/include/embree2/rtcore_ray.h":
     # RTCORE_ALIGN(16)
     # This is for a *single* ray
     cdef struct RTCRay:

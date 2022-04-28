@@ -15,3 +15,12 @@ dist/
 .vscode
 # Rever
 rever/
+
+# Virtual environment folders
+.venv/
+
+# Shared libs
+*.pyd
+
+# Embree folder
+pyembree/embree/

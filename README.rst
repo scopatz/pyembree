@@ -5,19 +5,18 @@ Python Wrapper for Embree
 
 Installation
 ------------
-You can install pyembree (and embree) via the conda-forge package.
+You can install pyembree (and embree) via ``pip``
 
 .. code-block:: bash
 
-    $ conda install -c conda-forge pyembree
+    $ pip install pyembree
 
-
-
-Suppressing errors
+Suppressing Errors
 ------------------
 
 Creating multiple scenes produces some harmless error messages:
 ::
+
     ERROR CAUGHT IN EMBREE
     ERROR: Invalid operation
     ERROR MESSAGE: b'already initialized'
