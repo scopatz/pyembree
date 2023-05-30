@@ -4,7 +4,7 @@ cimport cython
 cimport numpy as np
 
 
-cdef extern from "embree2/rtcore.h":
+cdef extern from "embree4/rtcore.h":
     cdef int RTCORE_VERSION_MAJOR
     cdef int RTCORE_VERSION_MINOR
     cdef int RTCORE_VERSION_PATCH
@@ -41,7 +41,7 @@ cdef extern from "embree2/rtcore.h":
     ctypedef bint RTCMemoryMonitorFunc(const ssize_t _bytes, const bint post)
     void rtcSetMemoryMonitorFunction(RTCMemoryMonitorFunc func)
 
-cdef extern from "embree2/rtcore_ray.h":
+cdef extern from "embree4/rtcore_ray.h":
     pass
 
 cdef struct Vertex:

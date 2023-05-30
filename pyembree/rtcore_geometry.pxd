@@ -5,7 +5,7 @@ from .rtcore_scene cimport RTCScene
 cimport cython
 cimport numpy as np
 
-cdef extern from "embree2/rtcore_geometry.h":
+cdef extern from "embree4/rtcore_geometry.h":
     cdef unsigned int RTC_INVALID_GEOMETRY_ID
 
     cdef enum RTCBufferType:

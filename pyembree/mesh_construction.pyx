@@ -1,3 +1,6 @@
+# cython: embedsignature=True
+
+
 cimport numpy as np
 cimport rtcore as rtc
 cimport rtcore_ray as rtcr
