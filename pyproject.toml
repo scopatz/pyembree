@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.2", "cython", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyembree"
+version = "0.1.6"
+dependencies = ["numpy", "cython", "setuptools"]
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = false
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.setuptools.package-data]
+pyembree = ["*.pxd"]
