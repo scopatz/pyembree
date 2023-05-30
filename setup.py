@@ -10,8 +10,8 @@ _cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 include_path = [np.get_include(),
                 '/usr/include/embree2',
-                os.path.join(_cwd, 'embree2'),
-                os.path.expanduser('~/embree2')]
+                os.path.join(_cwd, 'embree2', 'include'),
+                os.path.join(os.path.expanduser('~/embree2'), 'include')]
 
 ext_modules = cythonize('pyembree/*.pyx',
                         language='c++',
