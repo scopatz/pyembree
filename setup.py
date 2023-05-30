@@ -1,11 +1,17 @@
 #!/usr/bin/env python
+import os
 
 from setuptools import setup, find_packages
 
 from Cython.Build import cythonize
 import numpy as np
 
-include_path = [np.get_include(), '/usr/include/embree2']
+_cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+
+include_path = [np.get_include(),
+                '/usr/include/embree2',
+                os.path.join(_cwd, 'embree2'),
+                os.path.expanduser('~/embree2')]
 
 ext_modules = cythonize('pyembree/*.pyx',
                         language='c++',
