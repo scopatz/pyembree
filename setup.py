@@ -18,6 +18,7 @@ setup(
     name="pyembree",
     version='0.1.6',
     ext_modules=ext_modules,
+    install_requires=["numpy"],
     zip_safe=False,
     packages=find_packages(),
     package_data={'pyembree': ['*.pxd']}
