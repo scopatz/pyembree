@@ -4,20 +4,47 @@ import os
 from setuptools import setup, find_packages
 
 from Cython.Build import cythonize
-import numpy as np
+from numpy import get_include
 
-_cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
+# the current working directory
+cwd = os.path.abspath(os.path.expanduser(
+    os.path.dirname(__file__)))
 
-include_path = [np.get_include(),
-                '/usr/include/embree2',
-                os.path.join(_cwd, 'embree2', 'include'),
-                os.path.join(os.path.expanduser('~/embree2'), 'include')]
+if os.name == 'nt':
+    includes = [get_include(),
+                'c:/Program Files/Intel/Embree2/include',
+                os.path.join(cwd, 'embree2', 'include')]
+    libraries = [
+        'c:/Program Files/Intel/Embree2/lib',
+        os.path.join(cwd, 'embree2', 'lib')]
+else:
+
+    includes = [get_include(),
+                '/opt/local/include',
+                os.path.expanduser('~/embree2/include')]
+    libraries = ['/opt/local/lib',
+                 os.path.expanduser('~/embree2/lib')]
+
+"""
+extensions = [
+    Extension(
+        'embree.wrapper',
+        sources = ['embree/wrapper.pyx'],
+        libraries=['embree4'],
+        include_dirs=include,
+        library_dirs=library
+    )
+]
+"""
+
 
 ext_modules = cythonize('pyembree/*.pyx',
                         language='c++',
-                        include_path=include_path)
+                        include_path=includes)
+
 for ext in ext_modules:
-    ext.include_dirs = include_path
+    ext.include_dirs = includes
+    ext.library_dirs = libraries
     ext.libraries = ["embree"]
 
 setup(
