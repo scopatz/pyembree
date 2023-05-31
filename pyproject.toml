@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pyembree"
 version = "2.17.7"
+dependencies = ["numpy"]
 
 [tool.setuptools]
 zip-safe = false
