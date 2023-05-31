@@ -47,5 +47,5 @@ def ext_modules():
 # note that moving dependencies to `pyproject.toml` requires setuptools>61
 # which is only available on Python>3.7, so when you drop Python 3.6 you
 # can move the dependencies into the `pyproject.toml` and delete this comment
-setup(install_requires=['numpy']
+setup(install_requires=['numpy'],
       ext_modules=ext_modules())
