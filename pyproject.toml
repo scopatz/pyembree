@@ -26,7 +26,7 @@ test-command = "pytest -v {project}/tests"
 before-build =  "bash {project}/ci/embree2.linux.bash"
 
 [tool.cibuildwheel.windows]
-before-build = "pip install delvewheel && ci/embree2.win.bat"
+before-build = "pip install delvewheel && ci\\embree2.win.bat"
 repair-wheel-command = "delvewheel repair --add-path embree2\\bin --no-mangle tbb12.dll;embree2.dll -w {dest_dir} {wheel}"
  
 [tool.cibuildwheel.macos]
