@@ -1,3 +1,5 @@
+# distutils: language=c++
+
 cimport cython
 cimport numpy as np
 import numpy as np
