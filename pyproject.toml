@@ -18,7 +18,7 @@ pyembree = ["*.pxd"]
 
 [tool.cibuildwheel]
 skip =  "pp* *i686 *-win32 *musllinux*"
-manylinux-x86_64-image = "manylinux_2_28"
+manylinux-x86-64-image = "manylinux_2_28"
 before-build-linux =  "bash {project}/ci/embree2.linux.bash"
 before-test = "pip install pytest"
 test-command = "pytest -v {project}/tests"
