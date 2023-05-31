@@ -14,4 +14,4 @@ rm embree.tar.gz
 
 mv embree-2.17.7.x86_64.macosx ~/embree2
 
-ls ~/embree2
+ls ~/embree2/lib
