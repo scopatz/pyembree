@@ -14,7 +14,7 @@ jobs:
       CIBW_TEST_COMMAND: "pytest -v {project}/tests"
       CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
       CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path embree2\\bin --no-mangle tbb12.dll;embree2.dll -w {dest_dir} {wheel}"
-      CIBW_REPAIR_WHEEL_COMMAND_MAC: "DYLD_LIBRARY_PATH=~/embree2/lib delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+      CIBW_REPAIR_WHEEL_COMMAND_MAC: "DYLD_LIBRARY_PATH=~/embree2/lib; delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
 
     strategy:
       matrix:
