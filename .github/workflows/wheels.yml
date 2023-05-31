@@ -30,7 +30,7 @@ jobs:
     - name: Install Embree On Windows
       if: matrix.os == 'windows-latest'
       run: |
-        ci/embree2.win..bat
+        ci/embree2.win.bat
     - name: Install Embree On Mac
       if: matrix.os == 'macos-latest'
       run: |
