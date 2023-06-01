@@ -28,9 +28,9 @@ def ext_modules():
         # embree search locations on posix
         includes = [get_include(),
                     '/opt/local/include',
-                    os.path.expanduser('~/embree2/include')]
+                    os.path.join(_cwd, 'embree2', 'include')]
         libraries = ['/opt/local/lib',
-                     os.path.expanduser('~/embree2/lib')]
+                     os.path.join(_cwd, 'embree2', 'lib')]
 
     ext_modules = cythonize(
         'pyembree/*.pyx',

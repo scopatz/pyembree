@@ -109,6 +109,8 @@ def handle_fetch(url: str,
       Strip off this many components from the file path
       in the archive, i.e. at `1`, `a/b/c` is extracted to `target/b/c`
     """
+    if '..' in target:
+        target = os.path.join(_cwd, target)
     target = os.path.abspath(os.path.expanduser(target))
 
     if os.path.exists(target):
