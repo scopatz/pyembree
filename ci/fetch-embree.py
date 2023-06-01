@@ -14,6 +14,7 @@ from io import BytesIO
 from fnmatch import fnmatch
 from platform import system
 from typing import Optional
+from zipfile import ZipFile
 
 log = logging.getLogger('pyembree')
 log.setLevel(logging.DEBUG)
@@ -56,10 +57,17 @@ def extract(tar, member, path, chmod):
     """
     if os.path.isdir(path):
         return
-    data = tar.extractfile(member=member)
-    if not hasattr(data, 'read'):
-        return
-    data = data.read()
+
+    if hasattr(tar, 'extractfile'):
+        # a tarfile
+        data = tar.extractfile(member=member)
+        if not hasattr(data, 'read'):
+            return
+        data = data.read()
+    else:
+        # ZipFile -_-
+        data = tar.read(member.filename)
+
     if len(data) == 0:
         return
     # make sure root path exists
@@ -115,18 +123,30 @@ def handle_fetch(url: str,
         raise ValueError(f'{url} is empty!')
 
     # if we have an archive that tar supports
-    if url.endswith(('.tar.gz', '.tar.xz', 'tar.bz2')):
-        # mode needs to know what type of compression
-        mode = f'r:{url.split(".")[-1]}'
-        # get the archive
-        tar = tarfile.open(fileobj=BytesIO(raw), mode=mode)
+    if url.endswith(('.tar.gz', '.tar.xz', '.tar.bz2', 'zip')):
+
+        if url.endswith('.zip'):
+            tar = ZipFile(BytesIO(raw))
+            members = tar.infolist()
+        else:
+            # mode needs to know what type of compression
+            mode = f'r:{url.split(".")[-1]}'
+            # get the archive
+            tar = tarfile.open(fileobj=BytesIO(raw), mode=mode)
+            members = tar.getmembers()
 
         if extract_skip is None:
             extract_skip = []
 
-        for member in tar.getmembers():
+        for member in members:
+
+            if hasattr(member, 'filename'):
+                name = member.filename
+            else:
+                name = member.name
+
             # final name after stripping components
-            name = '/'.join(member.name.split('/')[strip_components:])
+            name = '/'.join(name.split('/')[strip_components:])
 
             # if any of the skip patterns match continue
             if any(fnmatch(name, p) for p in extract_skip):
