@@ -175,7 +175,7 @@ def is_current_platform(platform: str) -> bool:
     # 'linux', 'darwin', 'windows'
     current = system().lower().strip()
     if current.startswith('dar'):
-        return platform.startswith('dar') or platform.starswith('mac')
+        return platform.startswith('dar') or platform.startswith('mac')
     elif current.startswith('win'):
         return platform.startswith('win')
     elif current.startswith('lin'):
