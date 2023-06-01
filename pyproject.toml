@@ -5,6 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pyembree"
 version = "2.17.7"
+dependencies = ["numpy"]
+
 
 [tool.setuptools]
 zip-safe = false
@@ -21,15 +23,12 @@ skip =  "pp* *i686 *-win32 *musllinux*"
 manylinux-x86_64-image = "manylinux_2_28"
 before-test = "pip install pytest"
 test-command = "pytest -v {project}/tests"
-
-[tool.cibuildwheel.linux]
-before-build =  "bash {project}/ci/embree2.linux.bash"
+before-build = "python {project}/ci/fetch-embree.py --install embree2"
 
 [tool.cibuildwheel.windows]
-before-build = "pip install delvewheel && ci\\embree2.win.bat"
+before-build = "pip install delvewheel && python {project}\\ci\\fetch-embree.py --install embree2"
 repair-wheel-command = "delvewheel repair --add-path embree2\\bin --no-mangle tbb12.dll;embree2.dll -w {dest_dir} {wheel}"
  
 [tool.cibuildwheel.macos]
-before-build = "zsh ci/embree2.mac.bash"
 repair-wheel-command = 'DYLD_LIBRARY_PATH=~/embree2/lib delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}'
 

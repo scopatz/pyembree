@@ -1,28 +1,29 @@
 #!/usr/bin/env python
 import os
+import sys
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 from Cython.Build import cythonize
 from numpy import get_include
+
+# the current working directory
+_cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 
 def ext_modules():
     """
     Generate a list of extension modules for pyembree.
     """
-    # the current working directory
-    cwd = os.path.abspath(os.path.expanduser(
-        os.path.dirname(__file__)))
 
     if os.name == 'nt':
         # embree search locations on windows
         includes = [get_include(),
                     'c:/Program Files/Intel/Embree2/include',
-                    os.path.join(cwd, 'embree2', 'include')]
+                    os.path.join(_cwd, 'embree2', 'include')]
         libraries = [
             'c:/Program Files/Intel/Embree2/lib',
-            os.path.join(cwd, 'embree2', 'lib')]
+            os.path.join(_cwd, 'embree2', 'lib')]
     else:
         # embree search locations on posix
         includes = [get_include(),
@@ -43,9 +44,33 @@ def ext_modules():
     return ext_modules
 
 
-# rest of setup is specified in `pyproject.toml`
-# note that moving dependencies to `pyproject.toml` requires setuptools>61
-# which is only available on Python>3.7, so when you drop Python 3.6 you
-# can move the dependencies into the `pyproject.toml` and delete this comment
-setup(install_requires=['numpy'],
-      ext_modules=ext_modules())
+def load_pyproject() -> dict:
+    """
+    A hack for Python 3.6 to load data from `pyproject.toml`
+
+    The rest of setup is specified in `pyproject.toml` but moving dependencies
+    to `pyproject.toml` requires setuptools>61 which is only available on Python>3.7
+    When you drop Python 3.6 you can delete this function.
+    """
+    # this hack is only needed on Python 3.6 and older
+    if sys.version_info > (3, 6):
+        return {}
+
+    # store loaded values from the toml
+    values = {}
+    import json
+
+    # load the toml data with naive string wangling
+    with open(os.path.join(_cwd, 'pyproject.toml'), 'r') as f:
+        for line in f:
+            if '=' not in line:
+                continue
+            split = [i.strip() for i in line.strip().split('=')]
+            if split[0] in ('name', 'version', 'dependencies'):
+                values[split[0]] = json.loads(split[1])
+    values['install_requires'] = values.pop('dependencies')
+    return values
+
+
+setup(ext_modules=ext_modules(),
+      **load_pyproject())
