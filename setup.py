@@ -53,7 +53,7 @@ def load_pyproject() -> dict:
     When you drop Python 3.6 you can delete this function.
     """
     # this hack is only needed on Python 3.6 and older
-    if sys.version_info > (3, 6):
+    if sys.version_info >= (3, 7):
         return {}
 
     # store loaded values from the toml
@@ -69,6 +69,7 @@ def load_pyproject() -> dict:
             if split[0] in ('name', 'version', 'dependencies'):
                 values[split[0]] = json.loads(split[1])
     values['install_requires'] = values.pop('dependencies')
+
     return values
 
 
