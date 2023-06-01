@@ -212,4 +212,6 @@ if __name__ == '__main__':
         if option['name'] in select and is_current_platform(
                 option['platform']):
             subset = option.copy()
+            subset.pop('name')
+            subset.pop('platform')
             handle_fetch(**subset)
