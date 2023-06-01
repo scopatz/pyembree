@@ -18,7 +18,6 @@
     "url": "https://github.com/embree/embree/releases/download/v2.17.7/embree-2.17.7.x86_64.macosx.tar.gz"
   },
   {
-    "extract_skip": ["bin/*", "doc/*"],
     "name": "embree2",
     "platform": "windows",
     "sha256": "6fb7c828eef6cfe7186a5c002b52157a0d67471cf2c3072c3dced7d480071907",
