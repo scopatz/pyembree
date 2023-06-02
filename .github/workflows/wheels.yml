@@ -38,7 +38,7 @@ jobs:
       - name: Tag Version
         id: set_tag
         run: |
-          export V=$(python -c "print(next(iter(eval(L.split('=')[-1]) for L in open('pyproject.toml') if 'version' in L)))"
+          export V=$(python -c "print(next(iter(eval(L.split('=')[-1]) for L in open('pyproject.toml') if 'version' in L)))")
           echo "::set-output name=tag_name::${V}"
       - uses: actions/download-artifact@v3
       - name: Create Release
