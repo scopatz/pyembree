@@ -39,10 +39,11 @@ jobs:
         id: set_tag
         run: |
           export V=$(python -c "print(next(iter(eval(L.split('=')[-1]) for L in open('pyproject.toml') if 'version' in L)))")
-          echo "::set-output name=tag_name::${V}"
+          echo "tag=${V}" >> "$GITHUB_ENV"
       - uses: actions/download-artifact@v3
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.set_tag.outputs.tag_name }}
-          artifacts: "*.whl"
+          allowUpdates: true
+          tag: ${{ env.tag }}
+          artifacts: "wheels/*.whl"
