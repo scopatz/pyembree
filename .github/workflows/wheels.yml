@@ -49,6 +49,7 @@ jobs:
           artifacts: "wheels/*.whl"
   pypi-publish:
     name: Release to PyPI
+    needs: [wheels]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
