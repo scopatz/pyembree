@@ -7,7 +7,7 @@ name = "embreeX"
 version = "2.17.7"
 dependencies = ["numpy"]
 description = "Python binding for Intel's Embree ray engine"
-readme = {file = "README.rst", content-type = "text/x-rst"}
+readme = {file = "README.md", content-type = "text/markdown"}
 license = {file = "LICENSE"}
 
 [tool.setuptools]

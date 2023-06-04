@@ -74,12 +74,12 @@ def load_pyproject() -> dict:
 
 
 try:
-    with open(os.path.join(_cwd, 'README.rst'), 'r') as _f:
+    with open(os.path.join(_cwd, 'README.md'), 'r') as _f:
         long_description = _f.read()
 except BaseException:
     long_description = ''
 
 setup(ext_modules=ext_modules(),
       long_description=long_description,
-      long_description_content_type='text/x-rst',
+      long_description_content_type='text/markdown',
       **load_pyproject())
