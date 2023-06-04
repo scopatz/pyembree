@@ -6,6 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "embreeX"
 version = "2.17.7"
 dependencies = ["numpy"]
+description = "A python binding for Intel's Embree ray engine"
+readme = "README.md"
 
 
 [tool.setuptools]
