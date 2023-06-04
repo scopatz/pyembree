@@ -57,12 +57,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Download Wheels
-      - uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3
       - name: Build Source Dist
         run: |
           python setup.py sdist
           ls
           mv wheels/*.whl dist
           ls dist
-      - name: Publish package distributions to PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
