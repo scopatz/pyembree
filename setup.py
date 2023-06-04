@@ -73,5 +73,13 @@ def load_pyproject() -> dict:
     return values
 
 
+try:
+    with open(os.path.join(_cwd, 'README.rst'), 'r') as _f:
+        long_description = _f.read()
+except BaseException:
+    long_description = ''
+
 setup(ext_modules=ext_modules(),
+      long_description=long_description,
+      long_description_content_type='text/x-rst',
       **load_pyproject())
