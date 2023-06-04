@@ -5,11 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "embreeX"
 version = "2.17.7"
-license = {file = "LICENSE"}
 dependencies = ["numpy"]
 description = "Python binding for Intel's Embree ray engine"
-long_description = {file = "README.rst"}
-long_description_content_type = "text/x-rst"
+readme = {file = "README.rst"}
+license = {file = "LICENSE"}
 
 [tool.setuptools]
 zip-safe = false
