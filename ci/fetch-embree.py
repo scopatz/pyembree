@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-A Python 3 standard library only utility to download embree releases
+"""A Python 3 standard library only utility to download embree releases
 and copy them into the home directory for every plaform.
 """
 
@@ -16,18 +15,17 @@ from platform import system
 from typing import Optional
 from zipfile import ZipFile
 
-log = logging.getLogger('pyembree')
+log = logging.getLogger('embreex')
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler(sys.stdout))
 _cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 
 def fetch(url, sha256):
-    """
-    A simple standard-library only "fetch remote URL" function.
+    """A simple standard-library only "fetch remote URL" function.
 
     Parameters
-    ------------
+    ----------
     url : str
       Location of remote resource.
     sha256: str
@@ -35,7 +33,7 @@ def fetch(url, sha256):
       wil raise a `ValueError` if the hash doesn't match.
 
     Returns
-    -------------
+    -------
     data : bytes
       Retrieved data in memory with correct hash.
     """
@@ -52,9 +50,7 @@ def fetch(url, sha256):
 
 
 def extract(tar, member, path, chmod):
-    """
-    Extract a single member from a tarfile to a path.
-    """
+    """Extract a single member from a tarfile to a path."""
     if os.path.isdir(path):
         return
 
@@ -86,12 +82,11 @@ def handle_fetch(url: str,
                  extract_skip: Optional[bool] = None,
                  extract_only: Optional[bool] = None,
                  strip_components: int = 0):
-    """
-    A macro to fetch a remote resource (usually an executable) and
+    """A macro to fetch a remote resource (usually an executable) and
     move it somewhere on the file system.
 
     Parameters
-    ------------
+    ----------
     url : str
       A string with a remote resource.
     sha256 : str
@@ -180,9 +175,7 @@ def handle_fetch(url: str,
 
 
 def load_config(path: Optional[str] = None) -> list:
-    """
-    Load a config file for embree download locations.
-    """
+    """Load a config file for embree download locations."""
     if path is None or len(path) == 0:
         # use a default config file
         path = os.path.join(_cwd, 'embree.json')
@@ -191,9 +184,7 @@ def load_config(path: Optional[str] = None) -> list:
 
 
 def is_current_platform(platform: str) -> bool:
-    """
-    Check to see if a string platform identifier matches the current platform.
-    """
+    """Check to see if a string platform identifier matches the current platform."""
     # 'linux', 'darwin', 'windows'
     current = system().lower().strip()
     if current.startswith('dar'):

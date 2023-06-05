@@ -1,3 +1,5 @@
+from embreex.mesh_construction import TriangleMesh
+from embreex import rtcore_scene as rtcs
 import sys
 import time
 
@@ -6,12 +8,11 @@ PLOT = '--no-plots' not in sys.argv
 if PLOT:
     import matplotlib.pyplot as plt
 
-from pyembree import rtcore_scene as rtcs
-from pyembree.mesh_construction import TriangleMesh
 
-N = (4*256)**2
+N = (4 * 256)**2
 R = 3
 sigmas = [0.5, 2.0, 4.0]
+
 
 def xplane(x):
     return [[[x, -1.0, -1.0],
@@ -38,6 +39,7 @@ dirs[:, 0] = 1.0
 maxdist = np.empty(N, dtype='float32')
 exists = np.arange(N)
 
+
 def transport_region(r, origins, maxdist, exist):
     n = len(origins)
     u = np.random.random(n)
@@ -47,20 +49,21 @@ def transport_region(r, origins, maxdist, exist):
     t1 = time.time()
     intersects = scene.run(origins, dirs[:n], dists)
     t2 = time.time()
-    print("Ran region {0} in {1:.3f} s".format(r+1, t2-t1))
+    print("Ran region {0} in {1:.3f} s".format(r + 1, t2 - t1))
 
     bi = intersects == -1
     maxdist[exist[bi]] = origins[bi, 0] + dists[bi]
-    neworigins = np.asarray(triangles[intersects[~bi],0,:], dtype='float32')
-    neworigins[:,1:] = 0.0
+    neworigins = np.asarray(triangles[intersects[~bi], 0, :], dtype='float32')
+    neworigins[:, 1:] = 0.0
     exist = exist[~bi]
     return intersects, neworigins, exist
+
 
 for r in range(R):
     intersects, origins, exists = transport_region(r, origins, maxdist, exists)
 
 gi = intersects > -1
-maxdist[exists] = triangles[intersects[gi],0,0]  # get x coord
+maxdist[exists] = triangles[intersects[gi], 0, 0]  # get x coord
 
 for i in range(len(xgrid)):
     tally[i] += (maxdist >= xgrid[i]).sum()
@@ -70,4 +73,3 @@ if PLOT:
     plt.xlabel('x [cm]')
     plt.ylabel('flux')
     plt.savefig('attenuate.png')
-

@@ -13,7 +13,7 @@ _cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 def ext_modules():
     """
-    Generate a list of extension modules for pyembree.
+    Generate a list of extension modules for embreex.
     """
 
     if os.name == 'nt':
@@ -33,7 +33,7 @@ def ext_modules():
                      os.path.join(_cwd, 'embree2', 'lib')]
 
     ext_modules = cythonize(
-        'pyembree/*.pyx',
+        'embreex/*.pyx',
         include_path=includes,
         language_level=2)
     for ext in ext_modules:

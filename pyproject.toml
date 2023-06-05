@@ -3,7 +3,7 @@ requires = ["setuptools>=59.0", "cython", "numpy"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "embreeX"
+name = "embreex"
 version = "2.17.7"
 dependencies = ["numpy"]
 description = "Python binding for Intel's Embree ray engine"
@@ -18,7 +18,7 @@ include-package-data = false
 find = {namespaces = false}
 
 [tool.setuptools.package-data]
-pyembree = ["*.pxd"]
+embreex = ["*.pxd"]
 
 [tool.cibuildwheel]
 skip =  "pp* *i686 *-win32 *musllinux*"
@@ -36,3 +36,9 @@ repair-wheel-command = "DYLD_LIBRARY_PATH=embree2/lib delocate-wheel --require-a
 
 [tool.cibuildwheel.linux]
 repair-wheel-command = "LD_LIBRARY_PATH=`realpath embree2/lib`; auditwheel repair -w {dest_dir} {wheel}"
+
+[tool.ruff]
+select = ["E", "F", # the default rules
+          "T201",   # disallow print statements
+	   "B",     # pass bugbear
+	   "D"]

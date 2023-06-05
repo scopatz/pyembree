@@ -10,7 +10,7 @@ cimport rtcore_ray as rtcr
 cimport rtcore_geometry as rtcg
 
 
-log = logging.getLogger('pyembree')
+log = logging.getLogger('embreex')
 
 cdef void error_printer(const rtc.RTCError code, const char *_str):
     """

@@ -31,6 +31,7 @@ jobs:
       contents: write  # for actions/create-release
     name: Create GitHub Release
     needs: [wheels]
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -50,6 +51,7 @@ jobs:
   pypi-publish:
     name: Release to PyPI
     needs: [wheels]
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
