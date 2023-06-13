@@ -1,7 +1,9 @@
+# distutils: language=c++
+
 import logging
 
 
-log = logging.getLogger('pyembree')
+log = logging.getLogger('embreex')
 
 cdef void print_error(RTCError code):
     if code == RTC_NO_ERROR:

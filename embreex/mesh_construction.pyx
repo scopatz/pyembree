@@ -1,5 +1,5 @@
 # cython: embedsignature=True
-
+# distutils: language=c++
 
 cimport numpy as np
 cimport rtcore as rtc
@@ -130,6 +130,7 @@ cdef class TriangleMesh:
         self.vertices = vertices
         self.indices = triangles
         self.mesh = mesh
+
 
 cdef class ElementMesh(TriangleMesh):
     r'''

@@ -1,13 +1,13 @@
 build/
 __pycache__/
-pyembree/*.c
-pyembree/*.cpp
-pyembree/*.cxx
-pyembree/*.so
-pyembree/.*.swp
-pyembree/*.pyc
+embreex/*.c
+embreex/*.cpp
+embreex/*.cxx
+embreex/*.so
+embreex/.*.swp
+embreex/*.pyc
 .*.swp
-pyembree.egg-info/
+embreex.egg-info/
 dist/
 *.png
 

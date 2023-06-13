@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=59.0", "cython", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "embreex"
+version = "2.17.7.post1"
+dependencies = ["numpy"]
+description = "Python binding for Intel's Embree ray engine"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE"}
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = false
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.setuptools.package-data]
+embreex = ["*.pxd"]
+
+[tool.cibuildwheel]
+skip =  "pp* *i686 *-win32 *musllinux*"
+manylinux-x86_64-image = "manylinux_2_28"
+before-test = "pip install pytest"
+test-command = "pytest -v {project}/tests"
+before-build = "python {project}/ci/fetch-embree.py --install embree2"
+
+[tool.cibuildwheel.windows]
+before-build = "pip install delvewheel && python {project}\\ci\\fetch-embree.py --install embree2"
+repair-wheel-command = "delvewheel repair --add-path embree2\\bin --no-mangle tbb12.dll;embree2.dll -w {dest_dir} {wheel}"
+ 
+[tool.cibuildwheel.macos]
+repair-wheel-command = "DYLD_LIBRARY_PATH=embree2/lib delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel}"
+
+[tool.cibuildwheel.linux]
+repair-wheel-command = "LD_LIBRARY_PATH=`realpath embree2/lib`; auditwheel repair -w {dest_dir} {wheel}"
+
+[tool.ruff]
+select = ["E", "F", # the default rules
+          "T201",   # disallow print statements
+	   "B",     # pass bugbear
+	   "D"]
