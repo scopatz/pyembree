@@ -1,72 +1,13 @@
 #!/usr/bin/env python
 import os
-<<<<<<< HEAD
-
-from numpy import get_include
-from setuptools import find_packages, setup
-from setuptools.extension import Extension
-=======
 import sys
 
 from setuptools import setup
 
->>>>>>> main
 from Cython.Build import cythonize
 from numpy import get_include
 
 # the current working directory
-<<<<<<< HEAD
-cwd = os.path.abspath(os.path.expanduser(
-    os.path.dirname(__file__)))
-
-include = [get_include(),
-           '/opt/local/include',
-           os.path.expanduser('~/embree4/include')]
-
-library = ['/opt/local/lib',
-           os.path.expanduser('~/embree4/lib')]
-
-if os.name == 'nt':
-    include = [
-        'c:/Program Files/Intel/Embree4/include',
-        os.path.join(cwd, 'embree4', 'include')]
-    library = [
-        'c:/Program Files/Intel/Embree4/lib',
-        os.path.join(cwd, 'embree4', 'lib')]
-
-extensions = [
-    Extension(
-        'pyembree',
-        sources = ['pyembree/*.pyx'],
-        libraries=['embree4'],
-        language="c++",
-        include_dirs=include,
-        library_dirs=library
-    )
-]
- 
-ext_modules = cythonize('pyembree/*.pyx',
-                        include_path=include)
-for ext in ext_modules:
-    ext.include_dirs = include
-    ext.libraries = ["embree"]
-
-
-with open(os.path.join(cwd, 'README.md'), 'r') as f:
-    long_description = f.read()
-__version__ = '0.0.1'
-
-
-    
-setup(
-    name="pyembree",
-    version=__version__,
-    ext_modules=ext_modules,
-    zip_safe=False,
-    packages=find_packages(),
-    package_data = {'pyembree': ['*.pxd']}
-)
-=======
 _cwd = os.path.abspath(os.path.expanduser(os.path.dirname(__file__)))
 
 
@@ -78,18 +19,18 @@ def ext_modules():
     if os.name == 'nt':
         # embree search locations on windows
         includes = [get_include(),
-                    'c:/Program Files/Intel/Embree2/include',
-                    os.path.join(_cwd, 'embree2', 'include')]
+                    'c:/Program Files/Intel/Embree4/include',
+                    os.path.join(_cwd, 'embree4', 'include')]
         libraries = [
-            'c:/Program Files/Intel/Embree2/lib',
-            os.path.join(_cwd, 'embree2', 'lib')]
+            'c:/Program Files/Intel/Embree4/lib',
+            os.path.join(_cwd, 'embree4', 'lib')]
     else:
         # embree search locations on posix
         includes = [get_include(),
                     '/opt/local/include',
-                    os.path.join(_cwd, 'embree2', 'include')]
+                    os.path.join(_cwd, 'embree4', 'include')]
         libraries = ['/opt/local/lib',
-                     os.path.join(_cwd, 'embree2', 'lib')]
+                     os.path.join(_cwd, 'embree4', 'lib')]
 
     ext_modules = cythonize(
         'embreex/*.pyx',
@@ -142,4 +83,3 @@ setup(ext_modules=ext_modules(),
       long_description=long_description,
       long_description_content_type='text/markdown',
       **load_pyproject())
->>>>>>> main
