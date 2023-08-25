@@ -66,9 +66,10 @@ def load_pyproject() -> dict:
             if '=' not in line:
                 continue
             split = [i.strip() for i in line.strip().split('=')]
-            if split[0] in ('name', 'version', 'dependencies'):
+            if split[0] in ('name', 'version'):
                 values[split[0]] = json.loads(split[1])
-    values['install_requires'] = values.pop('dependencies')
+    # hardcode numpy dependency on python 3.6
+    values['install_requires'] = ["numpy"]
 
     return values
 
